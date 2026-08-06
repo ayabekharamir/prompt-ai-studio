@@ -1,0 +1,14 @@
+-- =========================================================
+-- Prompt AI Studio (PAS) - Seed Data
+-- Phase 1 - Development Foundation
+--
+-- IMPORTANT: No fake/mock business data is included here,
+-- per project rules ("Do not create fake business data").
+-- This file only seeds non-business, structural reference
+-- data: built-in (system) prompt template categories can be
+-- added later by product owners through the app itself.
+-- =========================================================
+
+-- Intentionally left without fabricated rows.
+-- Use this file to insert real, approved system prompt
+-- templates and reference data as the product team defines them.
