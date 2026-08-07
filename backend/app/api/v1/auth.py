@@ -5,6 +5,7 @@ Reserved (architecture ready, not activated): OTP request/verify, OAuth callback
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -25,7 +26,16 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def register(payload: RegisterRequest, db: Session = Depends(get_db)):
-    user = auth_service.register_user(db, payload)
+    try:
+        user = auth_service.register_user(db, payload)
+    except IntegrityError:
+        # Duplicate email or phone_number (unique constraint) - was previously
+        # an unhandled 500; now a proper 409 with a clear message.
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="An account with this email or phone number already exists.",
+        )
     return user
 
 
