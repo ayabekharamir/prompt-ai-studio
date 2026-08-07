@@ -1,0 +1,7 @@
+name = "prompt-ai-studio-page"
+
+compatibility_date = "2026-08-06"
+
+compatibility_flags = ["nodejs_compat"]
+
+main = ".open-next/worker.js"
