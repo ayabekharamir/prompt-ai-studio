@@ -11,14 +11,13 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.models.brand_identity import BrandIdentity
-from app.models.brand_rules import BrandRule
 from app.schemas.brand import (
     BrandIdentityCreate,
     BrandIdentityRead,
     BrandRuleCreate,
     BrandRuleRead,
 )
+from app.repositories.brand_repository import BrandIdentityRepository, BrandRuleRepository
 
 router = APIRouter()
 
@@ -32,16 +31,16 @@ def upsert_brand_identity(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    identity = db.query(BrandIdentity).filter(BrandIdentity.brand_id == brand_id).first()
+    repo = BrandIdentityRepository(db)
+    identity = repo.get_by_brand(brand_id)
     if identity:
         for field, value in payload.model_dump().items():
             setattr(identity, field, value)
+        db.commit()
+        db.refresh(identity)
     else:
-        identity = BrandIdentity(brand_id=brand_id, **payload.model_dump())
-        db.add(identity)
+        identity = repo.create(brand_id=brand_id, **payload.model_dump())
 
-    db.commit()
-    db.refresh(identity)
     return identity
 
 
@@ -51,7 +50,7 @@ def get_brand_identity(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    identity = db.query(BrandIdentity).filter(BrandIdentity.brand_id == brand_id).first()
+    identity = BrandIdentityRepository(db).get_by_brand(brand_id)
     if not identity:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Brand identity not set yet")
     return identity
@@ -66,11 +65,7 @@ def create_brand_rule(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    rule = BrandRule(brand_id=brand_id, **payload.model_dump())
-    db.add(rule)
-    db.commit()
-    db.refresh(rule)
-    return rule
+    return BrandRuleRepository(db).create(brand_id=brand_id, **payload.model_dump())
 
 
 @router.get("/{brand_id}/rules", response_model=list[BrandRuleRead])
@@ -79,4 +74,4 @@ def list_brand_rules(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(BrandRule).filter(BrandRule.brand_id == brand_id).all()
+    return BrandRuleRepository(db).list_by_brand(brand_id)
