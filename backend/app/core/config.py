@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
+    # Security preparation (Phase 1: prepared, not fully enforced)
+    # Comma-separated hostnames for TrustedHostMiddleware; "*" disables the check.
+    ALLOWED_HOSTS: str = "*"
+    RATE_LIMIT_ENABLED: bool = False
+    RATE_LIMIT_PER_MINUTE: int = 60
+
+    # Logging
+    LOG_LEVEL: str = "INFO"
+    LOG_JSON: bool = True
+
     # SMS OTP (SMS.ir) - architecture ready, inactive by default
     SMS_PROVIDER: str = "sms_ir"
     SMS_API_KEY: str = ""

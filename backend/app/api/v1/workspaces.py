@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.models.workspace import Workspace, WorkspaceMember
 from app.schemas.workspace import WorkspaceCreate, WorkspaceRead
+from app.repositories.workspace_repository import WorkspaceRepository
 
 router = APIRouter()
 
@@ -25,12 +25,12 @@ def create_workspace(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    workspace = Workspace(name=payload.name, slug=_slugify(payload.name), owner_id=current_user.id)
+    repo = WorkspaceRepository(db)
+    workspace = repo.model(name=payload.name, slug=_slugify(payload.name), owner_id=current_user.id)
     db.add(workspace)
     db.flush()
 
-    membership = WorkspaceMember(workspace_id=workspace.id, user_id=current_user.id, role="owner")
-    db.add(membership)
+    repo.add_member(workspace_id=workspace.id, user_id=current_user.id, role="owner")
 
     db.commit()
     db.refresh(workspace)
@@ -42,12 +42,7 @@ def list_workspaces(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return (
-        db.query(Workspace)
-        .join(WorkspaceMember, WorkspaceMember.workspace_id == Workspace.id)
-        .filter(WorkspaceMember.user_id == current_user.id)
-        .all()
-    )
+    return WorkspaceRepository(db).list_for_user(current_user.id)
 
 
 @router.get("/{workspace_id}", response_model=WorkspaceRead)
@@ -56,7 +51,7 @@ def get_workspace(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    workspace = db.query(Workspace).filter(Workspace.id == workspace_id).first()
+    workspace = WorkspaceRepository(db).get(workspace_id)
     if not workspace:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Workspace not found")
     return workspace

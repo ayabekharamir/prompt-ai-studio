@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.models.brand import Brand
 from app.schemas.brand import BrandCreate, BrandRead
+from app.repositories.brand_repository import BrandRepository
 
 router = APIRouter()
 
@@ -19,11 +19,7 @@ def create_brand(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    brand = Brand(workspace_id=workspace_id, **payload.model_dump())
-    db.add(brand)
-    db.commit()
-    db.refresh(brand)
-    return brand
+    return BrandRepository(db).create(workspace_id=workspace_id, **payload.model_dump())
 
 
 @router.get("/workspaces/{workspace_id}/brands", response_model=list[BrandRead])
@@ -32,7 +28,7 @@ def list_brands(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(Brand).filter(Brand.workspace_id == workspace_id).all()
+    return BrandRepository(db).list_by_workspace(workspace_id)
 
 
 @router.get("/{brand_id}", response_model=BrandRead)
@@ -41,7 +37,7 @@ def get_brand(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    brand = db.query(Brand).filter(Brand.id == brand_id).first()
+    brand = BrandRepository(db).get(brand_id)
     if not brand:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Brand not found")
     return brand

@@ -13,8 +13,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.models.prompt import Prompt
 from app.schemas.prompt import PromptCreate, PromptRead
+from app.repositories.prompt_repository import PromptRepository
 
 router = APIRouter()
 
@@ -26,15 +26,11 @@ def create_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    prompt = Prompt(
+    return PromptRepository(db).create(
         workspace_id=workspace_id,
         created_by=current_user.id,
         **payload.model_dump(),
     )
-    db.add(prompt)
-    db.commit()
-    db.refresh(prompt)
-    return prompt
 
 
 @router.get("/workspaces/{workspace_id}/prompts", response_model=list[PromptRead])
@@ -43,7 +39,7 @@ def list_prompts(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return db.query(Prompt).filter(Prompt.workspace_id == workspace_id).all()
+    return PromptRepository(db).list_by_workspace(workspace_id)
 
 
 @router.get("/{prompt_id}", response_model=PromptRead)
@@ -52,7 +48,7 @@ def get_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    prompt = db.query(Prompt).filter(Prompt.id == prompt_id).first()
+    prompt = PromptRepository(db).get(prompt_id)
     if not prompt:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
     return prompt

@@ -12,27 +12,26 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.auth import RegisterRequest, LoginRequest
 from app.core.security import hash_password, verify_password
+from app.repositories.user_repository import UserRepository
 
 
 def register_user(db: Session, data: RegisterRequest) -> User:
-    user = User(
+    repo = UserRepository(db)
+    return repo.create(
         full_name=data.full_name,
         email=data.email,
         phone_number=data.phone_number,
         hashed_password=hash_password(data.password),
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
 
 
 def authenticate_user(db: Session, data: LoginRequest) -> Optional[User]:
-    query = db.query(User)
+    repo = UserRepository(db)
+
     if data.email:
-        user = query.filter(User.email == data.email).first()
+        user = repo.get_by_email(data.email)
     elif data.phone_number:
-        user = query.filter(User.phone_number == data.phone_number).first()
+        user = repo.get_by_phone_number(data.phone_number)
     else:
         return None
 
