@@ -15,6 +15,7 @@ asyncpg==0.29.0
 # --- Validation / Settings ---
 pydantic==2.9.2
 pydantic-settings==2.5.2
+email-validator==2.2.0  # required by Pydantic's EmailStr (used in schemas/auth.py, schemas/user.py)
 
 # --- Auth / Security ---
 python-jose[cryptography]==3.3.0

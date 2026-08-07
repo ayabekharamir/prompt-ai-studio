@@ -12,6 +12,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+from app.core.logging import configure_logging, get_logger
+from app.core.exception_handlers import register_exception_handlers
+from app.core.security_middleware import register_security_middleware
 from app.api.v1 import (
     auth,
     users,
@@ -22,6 +25,9 @@ from app.api.v1 import (
     prompts,
 )
 
+configure_logging()
+logger = get_logger(__name__)
+
 app = FastAPI(
     title=settings.APP_NAME,
     description="Brand Intelligence and Prompt Management SaaS Platform API",
@@ -30,7 +36,11 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS - allow the frontend origin(s) defined in settings
+register_exception_handlers(app)
+
+# CORS - allow the frontend origin(s) defined in settings.
+# CORS_ORIGINS is env-driven (see .env.example) so production can restrict
+# this to the real deployed frontend origin(s) instead of localhost.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -38,6 +48,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Security middleware preparation (TrustedHost / rate limiting).
+# Both are no-ops unless explicitly enabled via env vars - see
+# app/core/security_middleware.py and .env.example.
+register_security_middleware(app)
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    logger.info(
+        "app_startup",
+        extra={"environment": settings.ENVIRONMENT, "app_name": settings.APP_NAME},
+    )
 
 API_PREFIX = "/api/v1"
 
