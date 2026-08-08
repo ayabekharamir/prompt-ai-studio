@@ -1,7 +1,15 @@
 """
 Auth endpoints.
-Active: register / login / refresh (email + password, JWT).
-Swagger OAuth2 compatible token endpoint added.
+Active:
+- register
+- login
+- refresh
+- Swagger OAuth2 token endpoint
+
+Authentication:
+- Email + Password
+- JWT Access Token
+- JWT Refresh Token
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,12 +17,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+
 from app.core.database import get_db
 from app.core.security import (
     create_access_token,
     create_refresh_token,
     decode_token,
 )
+
 
 from app.schemas.auth import (
     RegisterRequest,
@@ -25,6 +35,7 @@ from app.schemas.auth import (
     OTPVerifyRequest,
 )
 
+
 from app.schemas.user import UserRead
 from app.services import auth_service, otp_service
 
@@ -32,9 +43,9 @@ from app.services import auth_service, otp_service
 router = APIRouter()
 
 
-# -------------------------------------------------
+# =====================================================
 # Register
-# -------------------------------------------------
+# =====================================================
 
 @router.post(
     "/register",
@@ -46,7 +57,10 @@ def register(
     db: Session = Depends(get_db),
 ):
     try:
-        user = auth_service.register_user(db, payload)
+        user = auth_service.register_user(
+            db,
+            payload,
+        )
 
     except IntegrityError:
         db.rollback()
@@ -59,11 +73,10 @@ def register(
     return user
 
 
-
-# -------------------------------------------------
+# =====================================================
 # Normal JSON Login
 # Used by frontend/mobile clients
-# -------------------------------------------------
+# =====================================================
 
 @router.post(
     "/login",
@@ -79,10 +92,14 @@ def login(
         payload,
     )
 
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
         )
 
 
@@ -97,10 +114,14 @@ def login(
 
 
 
-# -------------------------------------------------
+# =====================================================
 # OAuth2 Token Endpoint
-# Used by FastAPI Swagger Authorize button
-# -------------------------------------------------
+# Used by Swagger UI Authorize button
+#
+# Swagger sends:
+# username = email
+# password = password
+# =====================================================
 
 @router.post(
     "/token",
@@ -127,6 +148,9 @@ def oauth2_login(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
         )
 
 
@@ -141,9 +165,9 @@ def oauth2_login(
 
 
 
-# -------------------------------------------------
+# =====================================================
 # Refresh Token
-# -------------------------------------------------
+# =====================================================
 
 @router.post(
     "/refresh",
@@ -159,7 +183,6 @@ def refresh_token(
 
 
     if not data or data.get("type") != "refresh":
-
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",
@@ -180,10 +203,10 @@ def refresh_token(
 
 
 
-# -------------------------------------------------
+# =====================================================
 # OTP endpoints
 # Architecture ready
-# -------------------------------------------------
+# =====================================================
 
 @router.post(
     "/otp/request",
@@ -197,13 +220,16 @@ def request_otp(
         payload.phone_number
     )
 
+
     return {
         "message": "OTP sent (mock in Phase 1)"
     }
 
 
 
-@router.post("/otp/verify")
+@router.post(
+    "/otp/verify"
+)
 def verify_otp(
     payload: OTPVerifyRequest,
 ):
