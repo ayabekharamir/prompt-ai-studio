@@ -11,13 +11,21 @@ from app.core.security import decode_token
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
+# Swagger OAuth2 login endpoint
+# IMPORTANT:
+# This must point to the OAuth2 compatible endpoint,
+# not the JSON login endpoint.
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/api/v1/auth/token"
+)
 
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ) -> User:
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -25,14 +33,20 @@ def get_current_user(
     )
 
     payload = decode_token(token)
-    if payload is None or payload.get("type") != "access":
+
+    if payload is None:
+        raise credentials_exception
+
+    if payload.get("type") != "access":
         raise credentials_exception
 
     user_id = payload.get("sub")
+
     if user_id is None:
         raise credentials_exception
 
     user = UserRepository(db).get(user_id)
+
     if user is None:
         raise credentials_exception
 
