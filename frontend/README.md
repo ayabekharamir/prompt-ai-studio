@@ -1,65 +1,64 @@
-# Prompt AI Studio — Frontend (Next.js 15)
+# Welcome to your Lovable project
 
-Frontend foundation for **Prompt AI Studio (PAS)** — Phase 1 (Development Foundation).
+This project was built with [Lovable](https://lovable.dev).
 
-## Stack
-- **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **HTTP Client:** Axios
-- **Package Manager:** pnpm
+## Build with Lovable
 
-## Project Structure
-```
-frontend/
-├── src/
-│   ├── app/                # Next.js App Router (layout, pages, global styles)
-│   ├── components/         # Reusable, presentation-only UI components
-│   │   └── ui/
-│   ├── features/           # Feature modules: auth, workspace, brand, prompts
-│   ├── services/           # API client layer (axios) per resource
-│   ├── types/               # Shared TypeScript types (mirrors backend schemas)
-│   └── utils/                # Generic helper functions
-├── package.json
-├── tsconfig.json
-├── tailwind.config.ts
-└── next.config.js
+Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
+- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
 ```
 
-## Getting Started (local, without Docker)
-```bash
-cd frontend
-pnpm install
-cp .env.example .env.local     # then edit values if needed
-pnpm dev
+## Built with
+
+- TanStack Start
+- TypeScript
+- React
+- Tailwind CSS
+
+## Prompt AI Studio — configuration
+
+The frontend talks to the FastAPI backend. Set the API base URL before running:
+
+```sh
+cp .env.example .env
+# then edit .env
+VITE_API_URL=https://<railway-app>.up.railway.app/api/v1
 ```
 
-App runs at `http://localhost:3000`.
+Notes:
 
-## Getting Started (Docker)
-From the repository root:
-```bash
-docker compose up --build
+- This project runs on TanStack Start (Vite), so public env vars use the
+  `VITE_` prefix instead of `NEXT_PUBLIC_`. `VITE_API_URL` is the equivalent of
+  `NEXT_PUBLIC_API_URL`.
+- Include the `/api/v1` suffix in the value — the client appends paths like
+  `/auth/login` directly.
+
+Then:
+
+```sh
+npm install
+npm run dev
 ```
 
-## API Integration
-All backend calls go through `src/services/api.ts`, which reads the
-backend base URL from `NEXT_PUBLIC_API_URL` and automatically attaches
-the JWT access token (stored in `localStorage` after login) to requests.
+### Structure
 
-## MVP Scope Covered in Phase 1 UI Foundation
-1. Account creation (register / login)
-2. Workspace creation
-3. Brand profile creation
-4. Brand Brain data entry (identity + rules)
-5. Prompt template browsing
-6. Prompt building & saving
-
-> AI-assisted generation is **not** wired to any AI API yet — see the
-> backend README for the provider-agnostic architecture prepared for it.
-
-## Future
-- Mobile application (separate codebase, will reuse `types/` contracts
-  and mirror `services/` API calls).
-- OAuth login buttons (Google / Apple / Microsoft) once backend providers
-  are activated.
+- `src/lib/api.ts` — typed fetch client: base URL, bearer header, and a single
+  silent `/auth/refresh` retry on 401 (clears tokens and redirects to `/login`
+  when refresh fails). Add new endpoints to the exported `api` object.
+- `src/context/auth.tsx` — auth provider holding the current user (`/users/me`),
+  loading state, and `login` / `register` / `logout`.
+- `src/routes/` — `/` (redirects), `/login`, `/register`, `/dashboard` (protected).
+- `src/components/auth/` — small form primitives.
