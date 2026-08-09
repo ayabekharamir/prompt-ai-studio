@@ -16,7 +16,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.prompt import PromptCreate, PromptRead
+from app.schemas.prompt import PromptCreate, PromptRead, PromptUpdate
 from app.schemas.prompt_execution import ExecutePromptRequest, PromptExecutionRead
 from app.repositories.prompt_repository import PromptRepository
 from app.repositories.prompt_execution_repository import PromptExecutionRepository
@@ -59,6 +59,45 @@ def get_prompt(
     if not prompt:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
     return prompt
+
+
+@router.put("/{prompt_id}", response_model=PromptRead)
+def update_prompt(
+    prompt_id: str,
+    payload: PromptUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Partially update a prompt. Only fields present in the body are changed."""
+    prompt = PromptRepository(db).get(prompt_id)
+    if not prompt:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
+
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(prompt, field, value)
+    db.commit()
+    db.refresh(prompt)
+    return prompt
+
+
+@router.delete("/{prompt_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_prompt(
+    prompt_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete a prompt and its AI execution history."""
+    prompt_repo = PromptRepository(db)
+    prompt = prompt_repo.get(prompt_id)
+    if not prompt:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
+
+    execution_repo = PromptExecutionRepository(db)
+    for execution in execution_repo.list_by_prompt(prompt_id):
+        execution_repo.delete(execution)
+
+    prompt_repo.delete(prompt)
+    return None
 
 
 # --- AI Execution (Phase 2B) ---

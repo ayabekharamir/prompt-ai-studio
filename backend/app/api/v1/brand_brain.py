@@ -16,6 +16,7 @@ from app.schemas.brand import (
     BrandIdentityRead,
     BrandRuleCreate,
     BrandRuleRead,
+    BrandRuleUpdate,
 )
 from app.repositories.brand_repository import BrandIdentityRepository, BrandRuleRepository
 
@@ -75,3 +76,37 @@ def list_brand_rules(
     current_user: User = Depends(get_current_user),
 ):
     return BrandRuleRepository(db).list_by_brand(brand_id)
+
+
+@router.put("/rules/{rule_id}", response_model=BrandRuleRead)
+def update_brand_rule(
+    rule_id: str,
+    payload: BrandRuleUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Partially update a brand rule. Only fields present in the body are changed."""
+    repo = BrandRuleRepository(db)
+    rule = repo.get(rule_id)
+    if not rule:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Brand rule not found")
+
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(rule, field, value)
+    db.commit()
+    db.refresh(rule)
+    return rule
+
+
+@router.delete("/rules/{rule_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_brand_rule(
+    rule_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    repo = BrandRuleRepository(db)
+    rule = repo.get(rule_id)
+    if not rule:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Brand rule not found")
+    repo.delete(rule)
+    return None
