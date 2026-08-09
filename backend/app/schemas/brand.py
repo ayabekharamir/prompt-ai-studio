@@ -57,6 +57,14 @@ class BrandRuleCreate(BrandRuleBase):
     pass
 
 
+class BrandRuleUpdate(BaseModel):
+    """Partial update - only fields provided are changed."""
+
+    rule_type: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+
+
 class BrandRuleRead(BrandRuleBase):
     id: UUID
     brand_id: UUID

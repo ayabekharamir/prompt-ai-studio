@@ -37,6 +37,16 @@ class PromptCreate(PromptBase):
     pass
 
 
+class PromptUpdate(BaseModel):
+    """Partial update - only fields provided are changed."""
+
+    title: Optional[str] = None
+    content: Optional[str] = None
+    brand_id: Optional[UUID] = None
+    template_id: Optional[UUID] = None
+    status: Optional[str] = None
+
+
 class PromptRead(PromptBase):
     id: UUID
     workspace_id: UUID
