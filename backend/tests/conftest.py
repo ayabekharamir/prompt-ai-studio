@@ -46,6 +46,7 @@ from app.models import (  # noqa: E402, F401
     brand_rules,
     prompt_template,
     prompt,
+    prompt_execution,
 )
 
 TEST_DATABASE_URL = os.environ.get(

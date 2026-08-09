@@ -33,6 +33,7 @@ from app.models import (  # noqa: E402, F401
     brand_rules,
     prompt_template,
     prompt,
+    prompt_execution,
 )
 
 # this is the Alembic Config object, which provides access to values within

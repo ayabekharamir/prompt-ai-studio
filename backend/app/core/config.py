@@ -50,10 +50,20 @@ class Settings(BaseSettings):
     MICROSOFT_CLIENT_ID: str = ""
     MICROSOFT_CLIENT_SECRET: str = ""
 
-    # AI Providers (future - not connected in Phase 1)
+    # AI Providers (Phase 2B: active integration layer)
+    # AI_PROVIDER selects the default provider used when a request does not
+    # explicitly override it. "none" keeps AI execution disabled (safe default
+    # until a provider + API key is configured).
     AI_PROVIDER: str = "none"
+
     OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-4o-mini"
+
     ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL: str = "claude-3-5-sonnet-20241022"
+
+    GOOGLE_AI_API_KEY: str = ""
+    GOOGLE_AI_MODEL: str = "gemini-1.5-flash"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

@@ -65,3 +65,9 @@ def prompt_payload(**overrides) -> dict:
     }
     payload.update(overrides)
     return payload
+
+
+def execute_prompt_payload(**overrides) -> dict:
+    payload = {}
+    payload.update(overrides)
+    return payload

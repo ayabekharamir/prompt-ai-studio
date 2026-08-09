@@ -2,9 +2,12 @@
 Prompt endpoints.
 
 Phase 1 scope: create, save, list and retrieve prompts built from templates
-and brand context. No AI API is called here - "generation" in Phase 1 means
-assembling the final prompt text from a template + brand brain + user input,
-not producing AI output.
+and brand context - no AI API is called here.
+
+Phase 2B adds AI execution on top of that unchanged foundation: prompt
+creation/list/get logic below is untouched. Execution logic (loading the
+prompt/brand/brand-brain, calling the AI provider, recording history) lives
+in app.services.prompt_execution_service and is only orchestrated here.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -14,7 +17,11 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.prompt import PromptCreate, PromptRead
+from app.schemas.prompt_execution import ExecutePromptRequest, PromptExecutionRead
 from app.repositories.prompt_repository import PromptRepository
+from app.repositories.prompt_execution_repository import PromptExecutionRepository
+from app.services import prompt_execution_service
+from app.services.prompt_execution_service import AIExecutionError, PromptNotFoundError
 
 router = APIRouter()
 
@@ -52,3 +59,50 @@ def get_prompt(
     if not prompt:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
     return prompt
+
+
+# --- AI Execution (Phase 2B) ---
+
+@router.post(
+    "/{prompt_id}/execute",
+    response_model=PromptExecutionRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def execute_prompt(
+    prompt_id: str,
+    payload: ExecutePromptRequest = ExecutePromptRequest(),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Execute a saved prompt against an AI provider.
+
+    Loads the prompt, its brand, and the brand's Brand Brain rules; injects
+    them as system context; sends the request to the selected AI provider
+    (payload.provider, else AI_PROVIDER from the environment); and stores +
+    returns a PromptExecution history record.
+    """
+    try:
+        return prompt_execution_service.execute_prompt(
+            db=db,
+            prompt_id=prompt_id,
+            user_id=current_user.id,
+            payload=payload,
+        )
+    except PromptNotFoundError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
+    except AIExecutionError as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc))
+
+
+@router.get("/{prompt_id}/executions", response_model=list[PromptExecutionRead])
+def list_prompt_executions(
+    prompt_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """List AI execution history for a prompt, most recent first."""
+    prompt = PromptRepository(db).get(prompt_id)
+    if not prompt:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
+    return PromptExecutionRepository(db).list_by_prompt(prompt_id)
