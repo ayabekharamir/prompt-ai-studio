@@ -5,8 +5,9 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { AuthGuard } from "@/components/AuthGuard";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea } from "@/components/ui/Input";
+import { Field, Input, Select, Textarea } from "@/components/ui/Input";
 import { Alert, Card } from "@/components/ui/Card";
+import { useLanguage } from "@/lib/i18n/language-context";
 import { listBrands } from "@/services/brand.service";
 import { createPrompt, listPromptTemplates } from "@/services/prompt.service";
 import type { Brand, PromptTemplate } from "@/types";
@@ -15,6 +16,7 @@ function NewPromptContent() {
   const { workspaceId } = useParams<{ workspaceId: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [brands, setBrands] = useState<Brand[]>([]);
   const [templates, setTemplates] = useState<PromptTemplate[]>([]);
@@ -26,15 +28,15 @@ function NewPromptContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    Promise.all([listBrands(workspaceId), listPromptTemplates()]).then(([b, t]) => {
+    Promise.all([listBrands(workspaceId), listPromptTemplates()]).then(([b, tpl]) => {
       setBrands(b);
-      setTemplates(t);
+      setTemplates(tpl);
     });
   }, [workspaceId]);
 
   useEffect(() => {
     if (!templateId) return;
-    const template = templates.find((t) => t.id === templateId);
+    const template = templates.find((tpl) => tpl.id === templateId);
     if (template) {
       setTitle((prev) => prev || template.title);
       setContent((prev) => prev || template.template_body);
@@ -54,62 +56,54 @@ function NewPromptContent() {
       });
       router.push(`/workspace/${workspaceId}/prompts`);
     } catch {
-      setError("ذخیره پرامپت با خطا مواجه شد.");
+      setError(t("promptNew.saveError"));
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-bg">
       <Navbar />
       <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="text-2xl font-bold text-gray-900">پرامپت جدید</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          می‌تونید از یک قالب شروع کنید، برند مرتبط رو انتخاب کنید و متن نهایی رو ویرایش کنید.
-        </p>
+        <h1 className="text-2xl font-bold text-fg">{t("promptNew.title")}</h1>
+        <p className="mt-1 text-sm text-fg-muted">{t("promptNew.subtitle")}</p>
 
         <Card className="mt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && <Alert variant="error">{error}</Alert>}
 
-            <Field label="قالب (اختیاری)" htmlFor="template">
-              <select
+            <Field label={`${t("promptNew.templateLabel")} (${t("common.optional")})`} htmlFor="template">
+              <Select
                 id="template"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
                 value={templateId}
                 onChange={(e) => setTemplateId(e.target.value)}
               >
-                <option value="">بدون قالب — از صفر بنویس</option>
-                {templates.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.title}
+                <option value="">{t("promptNew.noTemplate")}</option>
+                {templates.map((tpl) => (
+                  <option key={tpl.id} value={tpl.id}>
+                    {tpl.title}
                   </option>
                 ))}
-              </select>
+              </Select>
             </Field>
 
-            <Field label="برند مرتبط (اختیاری)" htmlFor="brand">
-              <select
-                id="brand"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand-light"
-                value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
-              >
-                <option value="">بدون برند</option>
+            <Field label={`${t("promptNew.brandLabel")} (${t("common.optional")})`} htmlFor="brand">
+              <Select id="brand" value={brandId} onChange={(e) => setBrandId(e.target.value)}>
+                <option value="">{t("promptNew.noBrand")}</option>
                 {brands.map((b) => (
                   <option key={b.id} value={b.id}>
                     {b.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </Field>
 
-            <Field label="عنوان" htmlFor="title">
+            <Field label={t("promptNew.titleLabel")} htmlFor="title">
               <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} />
             </Field>
 
-            <Field label="متن پرامپت" htmlFor="content">
+            <Field label={t("promptNew.contentLabel")} htmlFor="content">
               <Textarea
                 id="content"
                 required
@@ -121,10 +115,10 @@ function NewPromptContent() {
 
             <div className="flex gap-3">
               <Button type="submit" isLoading={isSubmitting}>
-                ذخیره پرامپت
+                {t("promptNew.submit")}
               </Button>
               <Button type="button" variant="ghost" onClick={() => router.back()}>
-                انصراف
+                {t("common.cancel")}
               </Button>
             </div>
           </form>

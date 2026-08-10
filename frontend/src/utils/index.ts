@@ -10,8 +10,9 @@ export function slugify(input: string): string {
     .replace(/(^-|-$)/g, "");
 }
 
-export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString("en-US", {
+export function formatDate(dateString: string, lang: "fa" | "en" = "fa"): string {
+  const locale = lang === "fa" ? "fa-IR" : "en-US";
+  return new Date(dateString).toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",

@@ -2,18 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/lib/i18n/language-context";
 import { classNames } from "@/utils";
 
 export function WorkspaceNav({ workspaceId }: { workspaceId: string }) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const tabs = [
-    { href: `/workspace/${workspaceId}`, label: "برندها" },
-    { href: `/workspace/${workspaceId}/prompts`, label: "پرامپت‌ها" },
+    { href: `/workspace/${workspaceId}`, label: t("workspaceNav.brands") },
+    { href: `/workspace/${workspaceId}/prompts`, label: t("workspaceNav.prompts") },
   ];
 
   return (
-    <div className="border-b border-gray-200">
+    <div className="border-b border-border bg-surface">
       <nav className="mx-auto flex max-w-6xl gap-6 px-6">
         {tabs.map((tab) => {
           const isActive =
@@ -25,10 +27,10 @@ export function WorkspaceNav({ workspaceId }: { workspaceId: string }) {
               key={tab.href}
               href={tab.href}
               className={classNames(
-                "border-b-2 px-1 py-3 text-sm font-medium",
+                "border-b-2 px-1 py-3 text-sm font-medium transition-colors",
                 isActive
                   ? "border-brand text-brand"
-                  : "border-transparent text-gray-500 hover:text-gray-700"
+                  : "border-transparent text-fg-muted hover:text-fg"
               )}
             >
               {tab.label}

@@ -3,7 +3,12 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { User } from "@/types";
-import { getCurrentUser, loginUser, registerUser } from "@/services/auth.service";
+import {
+  getCurrentUser,
+  loginUser,
+  registerUser,
+  loginWithGoogle,
+} from "@/services/auth.service";
 import { getAccessToken, storeTokens, clearTokens } from "@/lib/token-storage";
 
 interface AuthContextValue {
@@ -16,6 +21,7 @@ interface AuthContextValue {
     phone_number?: string;
     password: string;
   }) => Promise<void>;
+  loginWithGoogleToken: (idToken: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -73,6 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [login]
   );
 
+  const loginWithGoogleToken = useCallback(async (idToken: string) => {
+    const tokens = await loginWithGoogle(idToken);
+    storeTokens(tokens.access_token, tokens.refresh_token);
+    const me = await getCurrentUser();
+    setUser(me);
+  }, []);
+
   const logout = useCallback(() => {
     clearTokens();
     setUser(null);
@@ -81,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, register, logout, refreshUser: loadUser }}
+      value={{ user, isLoading, login, register, loginWithGoogleToken, logout, refreshUser: loadUser }}
     >
       {children}
     </AuthContext.Provider>

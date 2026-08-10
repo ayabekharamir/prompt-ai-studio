@@ -7,11 +7,13 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Input";
 import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
+import { useLanguage } from "@/lib/i18n/language-context";
 import { createWorkspace, listWorkspaces } from "@/services/workspace.service";
 import type { Workspace } from "@/types";
 import { formatDate } from "@/utils";
 
 function DashboardContent() {
+  const { t, lang } = useLanguage();
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,7 @@ function DashboardContent() {
       const data = await listWorkspaces();
       setWorkspaces(data);
     } catch {
-      setError("دریافت Workspace‌ها با خطا مواجه شد.");
+      setError(t("dashboard.loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -33,36 +35,34 @@ function DashboardContent() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setIsCreating(true);
-    setError(null);
     try {
       await createWorkspace(name);
       setName("");
       setShowForm(false);
       await load();
     } catch {
-      setError("ساخت Workspace با خطا مواجه شد.");
+      setError(t("dashboard.createError"));
     } finally {
       setIsCreating(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-bg">
       <Navbar />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Workspace‌های شما</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              هر Workspace می‌تونه چند برند و کتابخانه پرامپت جدا داشته باشه.
-            </p>
+            <h1 className="text-2xl font-bold text-fg">{t("dashboard.title")}</h1>
+            <p className="mt-1 text-sm text-fg-muted">{t("dashboard.subtitle")}</p>
           </div>
-          <Button onClick={() => setShowForm((v) => !v)}>+ Workspace جدید</Button>
+          <Button onClick={() => setShowForm((v) => !v)}>{t("dashboard.newWorkspace")}</Button>
         </div>
 
         {error && (
@@ -75,21 +75,21 @@ function DashboardContent() {
           <Card className="mt-6">
             <form onSubmit={handleCreate} className="flex flex-wrap items-end gap-4">
               <div className="min-w-[240px] flex-1">
-                <Field label="نام Workspace" htmlFor="ws_name">
+                <Field label={t("dashboard.formLabel")} htmlFor="ws_name">
                   <Input
                     id="ws_name"
                     required
-                    placeholder="مثلاً: برند اصلی من"
+                    placeholder={t("dashboard.formPlaceholder")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </Field>
               </div>
               <Button type="submit" isLoading={isCreating}>
-                ساخت
+                {t("common.create")}
               </Button>
               <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
-                انصراف
+                {t("common.cancel")}
               </Button>
             </form>
           </Card>
@@ -102,19 +102,19 @@ function DashboardContent() {
             </div>
           ) : workspaces.length === 0 ? (
             <EmptyState
-              title="هنوز هیچ Workspace‌ای نساختید"
-              description="یک Workspace بسازید تا بتونید برند و پرامپت اضافه کنید."
-              action={<Button onClick={() => setShowForm(true)}>ساخت اولین Workspace</Button>}
+              title={t("dashboard.emptyTitle")}
+              description={t("dashboard.emptyDesc")}
+              action={<Button onClick={() => setShowForm(true)}>{t("dashboard.emptyAction")}</Button>}
             />
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {workspaces.map((ws) => (
                 <Link key={ws.id} href={`/workspace/${ws.id}`}>
                   <Card className="h-full transition-shadow hover:shadow-md">
-                    <h3 className="font-semibold text-gray-900">{ws.name}</h3>
-                    <p className="mt-1 text-xs text-gray-400">{ws.slug}</p>
-                    <p className="mt-4 text-xs text-gray-400">
-                      ساخته‌شده در {formatDate(ws.created_at)}
+                    <h3 className="font-semibold text-fg">{ws.name}</h3>
+                    <p className="mt-1 text-xs text-fg-subtle">{ws.slug}</p>
+                    <p className="mt-4 text-xs text-fg-subtle">
+                      {t("dashboard.createdAt", { date: formatDate(ws.created_at, lang) })}
                     </p>
                   </Card>
                 </Link>

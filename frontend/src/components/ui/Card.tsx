@@ -5,7 +5,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={classNames(
-        "rounded-xl border border-gray-200 bg-white p-6 shadow-sm",
+        "rounded-xl border border-border bg-surface p-6 shadow-sm",
         className
       )}
       {...props}
@@ -21,9 +21,9 @@ export function Alert({
   children: React.ReactNode;
 }) {
   const styles = {
-    error: "bg-red-50 text-red-700 border-red-200",
-    success: "bg-green-50 text-green-700 border-green-200",
-    info: "bg-blue-50 text-blue-700 border-blue-200",
+    error: "bg-red-500/10 text-red-600 border-red-500/30 dark:text-red-400",
+    success: "bg-green-500/10 text-green-600 border-green-500/30 dark:text-green-400",
+    info: "bg-blue-500/10 text-blue-600 border-blue-500/30 dark:text-blue-400",
   }[variant];
 
   return (
@@ -54,9 +54,9 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-6 py-12 text-center">
-      <p className="text-sm font-medium text-gray-700">{title}</p>
-      {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
+    <div className="rounded-xl border border-dashed border-border bg-surface-muted px-6 py-12 text-center">
+      <p className="text-sm font-medium text-fg">{title}</p>
+      {description && <p className="mt-1 text-sm text-fg-muted">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

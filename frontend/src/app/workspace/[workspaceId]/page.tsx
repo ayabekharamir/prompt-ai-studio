@@ -8,11 +8,13 @@ import { Navbar } from "@/components/Navbar";
 import { WorkspaceNav } from "@/components/WorkspaceNav";
 import { Button } from "@/components/ui/Button";
 import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
+import { useLanguage } from "@/lib/i18n/language-context";
 import { listBrands } from "@/services/brand.service";
 import type { Brand } from "@/types";
 
 function WorkspaceBrandsContent() {
   const { workspaceId } = useParams<{ workspaceId: string }>();
+  const { t } = useLanguage();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,24 +22,23 @@ function WorkspaceBrandsContent() {
   useEffect(() => {
     listBrands(workspaceId)
       .then(setBrands)
-      .catch(() => setError("دریافت برندها با خطا مواجه شد."))
+      .catch(() => setError(t("brands.loadError")))
       .finally(() => setIsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceId]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-bg">
       <Navbar />
       <WorkspaceNav workspaceId={workspaceId} />
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">برندها</h1>
-            <p className="mt-1 text-sm text-gray-500">
-              هر برند یک Brand Brain جدا (هویت + قوانین) داره.
-            </p>
+            <h1 className="text-2xl font-bold text-fg">{t("brands.title")}</h1>
+            <p className="mt-1 text-sm text-fg-muted">{t("brands.subtitle")}</p>
           </div>
           <Link href={`/workspace/${workspaceId}/brands/new`}>
-            <Button>+ برند جدید</Button>
+            <Button>{t("brands.newBrand")}</Button>
           </Link>
         </div>
 
@@ -54,11 +55,11 @@ function WorkspaceBrandsContent() {
             </div>
           ) : brands.length === 0 ? (
             <EmptyState
-              title="هنوز هیچ برندی نساختید"
-              description="اول یک برند بسازید تا بتونید Brand Brain و پرامپت‌هاش رو تعریف کنید."
+              title={t("brands.emptyTitle")}
+              description={t("brands.emptyDesc")}
               action={
                 <Link href={`/workspace/${workspaceId}/brands/new`}>
-                  <Button>ساخت اولین برند</Button>
+                  <Button>{t("brands.emptyAction")}</Button>
                 </Link>
               }
             />
@@ -67,12 +68,12 @@ function WorkspaceBrandsContent() {
               {brands.map((brand) => (
                 <Link key={brand.id} href={`/workspace/${workspaceId}/brands/${brand.id}`}>
                   <Card className="h-full transition-shadow hover:shadow-md">
-                    <h3 className="font-semibold text-gray-900">{brand.name}</h3>
+                    <h3 className="font-semibold text-fg">{brand.name}</h3>
                     {brand.industry && (
-                      <p className="mt-1 text-xs text-gray-400">{brand.industry}</p>
+                      <p className="mt-1 text-xs text-fg-subtle">{brand.industry}</p>
                     )}
                     {brand.description && (
-                      <p className="mt-3 line-clamp-2 text-sm text-gray-600">
+                      <p className="mt-3 line-clamp-2 text-sm text-fg-muted">
                         {brand.description}
                       </p>
                     )}
