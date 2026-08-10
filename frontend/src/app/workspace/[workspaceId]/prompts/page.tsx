@@ -99,9 +99,16 @@ function PromptsContent() {
                         {t(`prompts.status.${p.status}`)}
                       </span>
                     </div>
+
                     <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-sm text-fg-muted">
                       {p.content}
                     </p>
+
+                    <div className="mt-4 flex gap-2">
+                      <Link href={`/workspace/${workspaceId}/prompts/${p.id}/execution`}>
+                        <Button>اجرا با AI</Button>
+                      </Link>
+                    </div>
                   </Card>
                 ))}
               </div>
