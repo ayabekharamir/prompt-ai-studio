@@ -8,163 +8,206 @@
 
 export const dictionaries = {
   fa: {
-    common: {
-      appName: "استودیو پرامپت هوشمند",
-      tagline: "مغز هوشمند ساخت محتوای برندها",
-      loading: "در حال بارگذاری...",
-      cancel: "انصراف",
-      save: "ذخیره",
-      create: "ساخت",
-      back: "بازگشت",
-      optional: "اختیاری",
-      comingSoon: "به‌زودی فعال می‌شود",
-      or: "یا",
+  common: {
+    appName: "استودیو پرامپت هوشمند",
+    tagline: "مغز هوشمند ساخت محتوای برندها",
+    loading: "در حال بارگذاری...",
+    cancel: "لغو",
+    save: "ذخیره",
+    create: "ایجاد",
+    back: "بازگشت",
+    optional: "اختیاری",
+    comingSoon: "به‌زودی فعال می‌شود",
+    or: "یا",
+  },
+
+  theme: {
+    light: "روشن",
+    dark: "تیره",
+    toggle: "تغییر حالت روشن/تیره",
+  },
+
+  lang: {
+    toggle: "تغییر زبان",
+  },
+
+  nav: {
+    logout: "خروج",
+    dashboard: "داشبورد",
+  },
+
+  home: {
+    title: "استودیو پرامپت هوشمند",
+    subtitle: "مغز هوشمند ساخت محتوای برند خود را بسازید",
+  },
+
+  auth: {
+    loginTab: "ورود",
+    registerTab: "ثبت‌نام",
+    emailTab: "ایمیل",
+    phoneTab: "شماره موبایل",
+
+    login: {
+      title: "ورود",
+      subtitle: "وارد حساب استودیو پرامپت هوشمند خود شوید.",
+      email: "ایمیل",
+      phone: "شماره موبایل",
+      password: "رمز عبور",
+      submit: "ورود",
+      submitting: "در حال ورود...",
+      noAccount: "حساب ندارید؟",
+      registerLink: "ثبت‌نام کنید",
+      errorInvalid: "ایمیل/شماره موبایل یا رمز عبور اشتباه است.",
+      googleButton: "ورود با گوگل",
     },
-    theme: {
-      light: "روشن",
-      dark: "تیره",
-      toggle: "تغییر تم روشن/تیره",
+
+    register: {
+      title: "ایجاد حساب کاربری",
+      subtitle:
+        "چند ثانیه زمان می‌برد، سپس می‌توانید اولین فضای کاری خود را ایجاد کنید.",
+      fullName: "نام کامل",
+      email: "ایمیل",
+      phone: "شماره موبایل",
+      password: "رمز عبور",
+      submit: "ثبت‌نام",
+      submitting: "در حال ثبت‌نام...",
+      haveAccount: "قبلاً حساب دارید؟",
+      loginLink: "وارد شوید",
+      errorGeneric:
+        "ثبت‌نام ناموفق بود. ممکن است این اطلاعات قبلاً استفاده شده باشد.",
+      googleButton: "ثبت‌نام با گوگل",
     },
-    lang: {
-      toggle: "تغییر زبان",
+  },
+
+  dashboard: {
+    title: "فضاهای کاری شما",
+    subtitle:
+      "هر فضای کاری می‌تواند چند برند و کتابخانه پرامپت جداگانه داشته باشد.",
+    newWorkspace: "+ فضای کاری جدید",
+    formLabel: "نام فضای کاری",
+    formPlaceholder: "مثلاً: برند اصلی من",
+    loadError: "دریافت فضاهای کاری با خطا مواجه شد.",
+    createError: "ایجاد فضای کاری با خطا مواجه شد.",
+    emptyTitle: "هنوز هیچ فضای کاری ایجاد نکرده‌اید",
+    emptyDesc:
+      "یک فضای کاری ایجاد کنید تا بتوانید برندها و پرامپت‌ها را اضافه کنید.",
+    emptyAction: "ایجاد اولین فضای کاری",
+    createdAt: "ایجاد شده در {date}",
+  },
+
+  workspaceNav: {
+    brands: "برندها",
+    prompts: "پرامپت‌ها",
+  },
+
+  brands: {
+    title: "برندها",
+    subtitle:
+      "هر برند یک مغز برند جداگانه شامل هویت و قوانین محتوایی دارد.",
+    newBrand: "+ برند جدید",
+    loadError: "دریافت برندها با خطا مواجه شد.",
+    emptyTitle: "هنوز هیچ برندی ایجاد نکرده‌اید",
+    emptyDesc:
+      "ابتدا یک برند ایجاد کنید تا بتوانید مغز برند و پرامپت‌های آن را تعریف کنید.",
+    emptyAction: "ایجاد اولین برند",
+  },
+
+  brandNew: {
+    title: "برند جدید",
+    subtitle:
+      "اطلاعات پایه برند را وارد کنید؛ جزئیات مغز برند در مرحله بعد تکمیل می‌شود.",
+    name: "نام برند",
+    industry: "حوزه فعالیت",
+    industryPlaceholder:
+      "مثلاً: پوشاک، فناوری، غذا",
+    website: "وب‌سایت",
+    description: "توضیحات",
+    submit: "ایجاد برند",
+    createError: "ایجاد برند با خطا مواجه شد.",
+  },
+
+  brandBrain: {
+    subtitle:
+      "مغز برند — هویت و قوانین محتوایی این برند",
+    identityTitle: "هویت برند",
+    saveIdentity: "ذخیره هویت برند",
+    saved: "مغز برند ذخیره شد.",
+    loadError:
+      "دریافت اطلاعات مغز برند با خطا مواجه شد.",
+    saveError:
+      "ذخیره تغییرات با خطا مواجه شد.",
+    rulesTitle: "قوانین محتوایی",
+    newRule: "+ قانون جدید",
+    ruleType: "نوع قانون",
+    ruleTypePlaceholder:
+      "مثلاً: کلمات ممنوعه، سبک نگارش",
+    ruleTitle: "عنوان",
+    ruleDescription: "توضیح",
+    addRule: "افزودن قانون",
+    addRuleError:
+      "افزودن قانون با خطا مواجه شد.",
+    emptyRules:
+      "هنوز قانونی اضافه نشده است",
+
+    fields: {
+      mission: "ماموریت",
+      vision: "چشم‌انداز",
+      target_audience: "مخاطب هدف",
+      tone_of_voice: "لحن برند",
+      core_values: "ارزش‌های اصلی",
+      unique_selling_point: "مزیت رقابتی",
+      brand_personality: "شخصیت برند",
     },
-    nav: {
-      logout: "خروج",
-      dashboard: "داشبورد",
+  },
+
+  prompts: {
+    title: "پرامپت‌ها",
+    newPrompt: "+ پرامپت جدید",
+    mine: "پرامپت‌های من ({count})",
+    templates:
+      "قالب‌های پرامپت ({count})",
+    loadError:
+      "دریافت پرامپت‌ها با خطا مواجه شد.",
+    emptyMineTitle:
+      "هنوز پرامپتی ایجاد نکرده‌اید",
+    emptyMineDesc:
+      "از یک قالب شروع کنید یا یک پرامپت جدید ایجاد کنید.",
+    emptyMineAction:
+      "ایجاد اولین پرامپت",
+    emptyTemplates:
+      "هنوز قالب پرامپتی در کتابخانه وجود ندارد",
+    useTemplate:
+      "استفاده از این قالب ←",
+
+    status: {
+      draft: "پیش‌نویس",
+      saved: "ذخیره‌شده",
+      archived: "بایگانی‌شده",
     },
-    home: {
-      title: "استودیو پرامپت هوشمند",
-      subtitle: "مغز هوشمند ساخت محتوای برندت رو بساز",
-    },
-    auth: {
-      loginTab: "ورود",
-      registerTab: "ثبت‌نام",
-      emailTab: "ایمیل",
-      phoneTab: "شماره موبایل",
-      login: {
-        title: "ورود",
-        subtitle: "وارد حساب استودیو پرامپت هوشمند خود شوید.",
-        email: "ایمیل",
-        phone: "شماره موبایل",
-        password: "رمز عبور",
-        submit: "ورود",
-        submitting: "در حال ورود...",
-        noAccount: "حساب ندارید؟",
-        registerLink: "ثبت‌نام کنید",
-        errorInvalid: "ایمیل/شماره یا رمز عبور اشتباه است.",
-        googleButton: "ورود با گوگل",
-      },
-      register: {
-        title: "ساخت حساب کاربری",
-        subtitle: "چند ثانیه طول می‌کشد و بعد می‌تونید Workspace اولتون رو بسازید.",
-        fullName: "نام کامل",
-        email: "ایمیل",
-        phone: "شماره موبایل",
-        password: "رمز عبور",
-        submit: "ثبت‌نام",
-        submitting: "در حال ثبت‌نام...",
-        haveAccount: "قبلاً حساب دارید؟",
-        loginLink: "وارد شوید",
-        errorGeneric: "ثبت‌نام ناموفق بود. شاید قبلاً استفاده شده.",
-        googleButton: "ثبت‌نام با گوگل",
-      },
-      otp: {
-        title: "تأیید شماره موبایل",
-        description: "کد تأییدی که برای شماره‌ات پیامک شد رو وارد کن.",
-        sendCode: "ارسال کد تأیید",
-        sending: "در حال ارسال...",
-        codeSentTo: "کد تأیید به شماره {phone} ارسال شد.",
-        codeLabel: "کد تأیید",
-        verify: "تأیید کد",
-        verifying: "در حال بررسی...",
-        verified: "شماره موبایل با موفقیت تأیید شد.",
-        resend: "ارسال دوباره کد",
-        skip: "فعلاً رد شو",
-        invalidCode: "کد وارد شده نامعتبر یا منقضی شده است.",
-        requestError: "ارسال کد با خطا مواجه شد.",
-        mockNotice: "در این نسخه، پیامک واقعی ارسال نمی‌شود (حالت آزمایشی).",
-      },
-    },
-    dashboard: {
-      title: "Workspace‌های شما",
-      subtitle: "هر Workspace می‌تونه چند برند و کتابخانه پرامپت جدا داشته باشه.",
-      newWorkspace: "+ Workspace جدید",
-      formLabel: "نام Workspace",
-      formPlaceholder: "مثلاً: برند اصلی من",
-      loadError: "دریافت Workspace‌ها با خطا مواجه شد.",
-      createError: "ساخت Workspace با خطا مواجه شد.",
-      emptyTitle: "هنوز هیچ Workspace‌ای نساختید",
-      emptyDesc: "یک Workspace بسازید تا بتونید برند و پرامپت اضافه کنید.",
-      emptyAction: "ساخت اولین Workspace",
-      createdAt: "ساخته‌شده در {date}",
-    },
-    workspaceNav: {
-      brands: "برندها",
-      prompts: "پرامپت‌ها",
-    },
-    brands: {
-      title: "برندها",
-      subtitle: "هر برند یک Brand Brain جدا (هویت + قوانین) داره.",
-      newBrand: "+ برند جدید",
-      loadError: "دریافت برندها با خطا مواجه شد.",
-      emptyTitle: "هنوز هیچ برندی نساختید",
-      emptyDesc: "اول یک برند بسازید تا بتونید Brand Brain و پرامپت‌هاش رو تعریف کنید.",
-      emptyAction: "ساخت اولین برند",
-    },
-    brandNew: {
-      title: "برند جدید",
-      subtitle: "اطلاعات پایه برند رو وارد کنید — جزئیات Brand Brain رو مرحله بعد تکمیل می‌کنید.",
-      name: "نام برند",
-      industry: "حوزه فعالیت",
-      industryPlaceholder: "مثلاً: پوشاک، فناوری، غذا",
-      website: "وب‌سایت",
-      description: "توضیحات",
-      submit: "ساخت برند",
-      createError: "ساخت برند با خطا مواجه شد.",
-    },
-    brandBrain: {
-      subtitle: "Brand Brain — هویت و قوانین محتوایی این برند",
-      identityTitle: "هویت برند",
-      saveIdentity: "ذخیره هویت برند",
-      saved: "Brand Brain ذخیره شد.",
-      loadError: "دریافت اطلاعات Brand Brain با خطا مواجه شد.",
-      saveError: "ذخیره‌سازی با خطا مواجه شد.",
-      rulesTitle: "قوانین محتوایی",
-      newRule: "+ قانون جدید",
-      ruleType: "نوع قانون",
-      ruleTypePlaceholder: "مثلاً: کلمات ممنوعه، سبک نگارش",
-      ruleTitle: "عنوان",
-      ruleDescription: "توضیح",
-      addRule: "افزودن قانون",
-      addRuleError: "افزودن قانون با خطا مواجه شد.",
-      emptyRules: "هنوز قانونی اضافه نشده",
-      fields: {
-        mission: "مأموریت (Mission)",
-        vision: "چشم‌انداز (Vision)",
-        target_audience: "مخاطب هدف",
-        tone_of_voice: "لحن برند (Tone of Voice)",
-        core_values: "ارزش‌های اصلی",
-        unique_selling_point: "مزیت رقابتی (USP)",
-        brand_personality: "شخصیت برند",
-      },
-    },
-    prompts: {
-      title: "پرامپت‌ها",
-      newPrompt: "+ پرامپت جدید",
-      mine: "پرامپت‌های من ({count})",
-      templates: "کتابخانه قالب‌ها ({count})",
-      loadError: "دریافت پرامپت‌ها با خطا مواجه شد.",
-      emptyMineTitle: "هنوز پرامپتی نساختید",
-      emptyMineDesc: "از یک قالب شروع کنید یا از صفر یک پرامپت بسازید.",
-      emptyMineAction: "ساخت اولین پرامپت",
-      emptyTemplates: "هنوز قالبی در کتابخانه نیست",
-      useTemplate: "استفاده از این قالب ←",
-      status: {
-        draft: "پیش‌نویس",
-        saved: "ذخیره‌شده",
-        archived: "بایگانی‌شده",
-      },
-    },
+  },
+
+  promptNew: {
+    title: "پرامپت جدید",
+    subtitle:
+      "از یک قالب پرامپت شروع کنید، برند مرتبط را انتخاب کنید و متن نهایی را ویرایش کنید.",
+    templateLabel:
+      "قالب پرامپت",
+    noTemplate:
+      "بدون قالب — از ابتدا بنویس",
+    brandLabel:
+      "برند مرتبط",
+    noBrand:
+      "بدون برند",
+    titleLabel:
+      "عنوان",
+    contentLabel:
+      "متن پرامپت",
+    submit:
+      "ذخیره پرامپت",
+    saveError:
+      "ذخیره پرامپت با خطا مواجه شد.",
+  },
+}
     promptNew: {
       title: "پرامپت جدید",
       subtitle: "می‌تونید از یک قالب شروع کنید، برند مرتبط رو انتخاب کنید و متن نهایی رو ویرایش کنید.",
