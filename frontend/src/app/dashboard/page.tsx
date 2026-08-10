@@ -85,9 +85,8 @@ function DashboardContent() {
   return (
 
     <div
-      className={`flex min-h-screen bg-background ${
-        isRTL ? "flex-row-reverse" : "flex-row"
-      }`}
+      dir={isRTL ? "rtl" : "ltr"}
+      className="flex min-h-screen bg-background"
     >
 
       <DashboardSidebar />
