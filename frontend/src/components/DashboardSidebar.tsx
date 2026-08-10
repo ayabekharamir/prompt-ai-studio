@@ -53,12 +53,13 @@ export function DashboardSidebar() {
   ];
 
   return (
-    <aside
-      className={classNames(
-        "hidden lg:flex w-64 min-h-screen border-border bg-card p-4 flex-col",
-        isRTL ? "border-l" : "border-r"
-      )}
-    >
+<aside
+  className={`
+    w-64
+    border-border
+    ${isRTL ? "border-l" : "border-r"}
+  `}
+>
       <div className="mb-8 text-xl font-bold text-brand">
         Prompt AI Studio ✦
       </div>
