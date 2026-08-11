@@ -34,6 +34,7 @@ export const dictionaries = {
     nav: {
       logout: "خروج",
       dashboard: "داشبورد",
+      profile: "پروفایل",
     },
 
     home: {
@@ -249,6 +250,7 @@ export const dictionaries = {
     nav: {
       logout: "Log out",
       dashboard: "Dashboard",
+      profile: "Profile",
     },
     home: {
       title: "Prompt AI Studio",
