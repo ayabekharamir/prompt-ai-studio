@@ -3,10 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { AuthGuard } from "@/components/AuthGuard";
-import { Navbar } from "@/components/Navbar";
-import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { MobileSidebar } from "@/components/MobileSidebar";
 import { Button } from "@/components/ui/Button";
 import { Card, Alert, EmptyState, Spinner } from "@/components/ui/Card";
 
@@ -79,34 +75,7 @@ function DashboardContent() {
   }
 
   return (
-    <div
-      dir={isRTL ? "rtl" : "ltr"}
-      className="min-h-screen bg-background text-fg"
-    >
-      {/* Mobile top bar + drawer */}
-      <MobileSidebar />
-
-      <div className="flex min-h-[calc(100vh-73px)] lg:min-h-screen">
-        {/* Desktop sidebar */}
-        <aside
-          className={
-            isRTL
-              ? "hidden lg:block lg:order-2"
-              : "hidden lg:block lg:order-1"
-          }
-        >
-          <DashboardSidebar />
-        </aside>
-
-        {/* Main content */}
-        <main
-          className={
-            isRTL
-              ? "min-w-0 flex-1 lg:order-1"
-              : "min-w-0 flex-1 lg:order-2"
-          }
-        >
-          <div className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
+    <div className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">
             {/* Header */}
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -336,18 +305,10 @@ function DashboardContent() {
                 </div>
               )}
             </section>
-          </div>
-        </main>
-      </div>
     </div>
   );
 }
 
 export default function DashboardPage() {
-  return (
-    <AuthGuard>
-      <Navbar />
-      <DashboardContent />
-    </AuthGuard>
-  );
+  return <DashboardContent />;
 }
