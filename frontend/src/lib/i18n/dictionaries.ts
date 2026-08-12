@@ -159,8 +159,7 @@ export const dictionaries = {
         "اطلاعات پایه برند را وارد کنید؛ جزئیات مغز برند در مرحله بعد تکمیل می‌شود.",
       name: "نام برند",
       industry: "حوزه فعالیت",
-      industryPlaceholder:
-        "مثلاً: پوشاک، فناوری، غذا",
+      industryPlaceholder: "مثلاً: پوشاک، فناوری، غذا",
       website: "وب‌سایت",
       description: "توضیحات",
       submit: "ایجاد برند",
@@ -168,27 +167,21 @@ export const dictionaries = {
     },
 
     brandBrain: {
-      subtitle:
-        "مغز برند — هویت و قوانین محتوایی این برند",
+      subtitle: "مغز برند — هویت و قوانین محتوایی این برند",
       identityTitle: "هویت برند",
       saveIdentity: "ذخیره هویت برند",
       saved: "مغز برند ذخیره شد.",
-      loadError:
-        "دریافت اطلاعات مغز برند با خطا مواجه شد.",
-      saveError:
-        "ذخیره تغییرات با خطا مواجه شد.",
+      loadError: "دریافت اطلاعات مغز برند با خطا مواجه شد.",
+      saveError: "ذخیره تغییرات با خطا مواجه شد.",
       rulesTitle: "قوانین محتوایی",
       newRule: "+ قانون جدید",
       ruleType: "نوع قانون",
-      ruleTypePlaceholder:
-        "مثلاً: کلمات ممنوعه، سبک نگارش",
+      ruleTypePlaceholder: "مثلاً: کلمات ممنوعه، سبک نگارش",
       ruleTitle: "عنوان",
       ruleDescription: "توضیح",
       addRule: "افزودن قانون",
-      addRuleError:
-        "افزودن قانون با خطا مواجه شد.",
-      emptyRules:
-        "هنوز قانونی اضافه نشده است",
+      addRuleError: "افزودن قانون با خطا مواجه شد.",
+      emptyRules: "هنوز قانونی اضافه نشده است",
 
       fields: {
         mission: "ماموریت",
@@ -201,24 +194,44 @@ export const dictionaries = {
       },
     },
 
+    brandAssets: {
+      title: "دارایی‌های بصری برند",
+      subtitle: "لوگوها، تصاویر محصولات و فایل‌های مرجع برند خود را مدیریت کنید.",
+      uploadLabel: "انتخاب فایل",
+      categoryLabel: "دسته‌بندی",
+      upload: "آپلود دارایی",
+      uploading: "در حال آپلود...",
+      uploadSuccess: "فایل با موفقیت آپلود شد.",
+      uploadError: "خطا در آپلود فایل.",
+      invalidFileType: "فرمت فایل نامعتبر است.",
+      delete: "حذف",
+      deleteConfirm: "آیا از حذف این دارایی مطمئن هستید؟",
+      deleteSuccess: "دارایی با موفقیت حذف شد.",
+      deleteError: "خطا در حذف دارایی.",
+      loadError: "خطا در دریافت دارایی‌های برند.",
+      empty: "هنوز هیچ دارایی بصری اضافه نشده است.",
+      categories: {
+        logo: "لوگو اصلی",
+        logo_variant: "واریاسیون لوگو",
+        brand_photo: "تصویر برند",
+        product: "محصول",
+        character: "کاراکتر / ایجنت",
+        reference: "مرجع بصری",
+        other: "سایر",
+      },
+    },
+
     prompts: {
       title: "پرامپت‌ها",
       newPrompt: "+ پرامپت جدید",
       mine: "پرامپت‌های من ({count})",
-      templates:
-        "قالب‌های پرامپت ({count})",
-      loadError:
-        "دریافت پرامپت‌ها با خطا مواجه شد.",
-      emptyMineTitle:
-        "هنوز پرامپتی ایجاد نکرده‌اید",
-      emptyMineDesc:
-        "از یک قالب شروع کنید یا یک پرامپت جدید ایجاد کنید.",
-      emptyMineAction:
-        "ایجاد اولین پرامپت",
-      emptyTemplates:
-        "هنوز قالب پرامپتی در کتابخانه وجود ندارد",
-      useTemplate:
-        "استفاده از این قالب ←",
+      templates: "قالب‌های پرامپت ({count})",
+      loadError: "دریافت پرامپت‌ها با خطا مواجه شد.",
+      emptyMineTitle: "هنوز پرامپتی ایجاد نکرده‌اید",
+      emptyMineDesc: "از یک قالب شروع کنید یا یک پرامپت جدید ایجاد کنید.",
+      emptyMineAction: "ایجاد اولین پرامپت",
+      emptyTemplates: "هنوز قالب پرامپتی در کتابخانه وجود ندارد",
+      useTemplate: "استفاده از این قالب ←",
 
       status: {
         draft: "پیش‌نویس",
@@ -231,22 +244,14 @@ export const dictionaries = {
       title: "پرامپت جدید",
       subtitle:
         "از یک قالب پرامپت شروع کنید، برند مرتبط را انتخاب کنید و متن نهایی را ویرایش کنید.",
-      templateLabel:
-        "قالب پرامپت",
-      noTemplate:
-        "بدون قالب — از ابتدا بنویس",
-      brandLabel:
-        "برند مرتبط",
-      noBrand:
-        "بدون برند",
-      titleLabel:
-        "عنوان",
-      contentLabel:
-        "متن پرامپت",
-      submit:
-        "ذخیره پرامپت",
-      saveError:
-        "ذخیره پرامپت با خطا مواجه شد.",
+      templateLabel: "قالب پرامپت",
+      noTemplate: "بدون قالب — از ابتدا بنویس",
+      brandLabel: "برند مرتبط",
+      noBrand: "بدون برند",
+      titleLabel: "عنوان",
+      contentLabel: "متن پرامپت",
+      submit: "ذخیره پرامپت",
+      saveError: "ذخیره پرامپت با خطا مواجه شد.",
     },
   },
 
@@ -317,30 +322,24 @@ export const dictionaries = {
         submitting: "Signing up...",
         haveAccount: "Already have an account?",
         loginLink: "Log in",
-        errorGeneric:
-          "Sign up failed. This may already be in use.",
+        errorGeneric: "Sign up failed. This may already be in use.",
         googleButton: "Sign up with Google",
       },
 
       otp: {
         title: "Verify your phone number",
-        description:
-          "Enter the code that was texted to your phone.",
+        description: "Enter the code that was texted to your phone.",
         sendCode: "Send verification code",
         sending: "Sending...",
-        codeSentTo:
-          "A verification code was sent to {phone}.",
+        codeSentTo: "A verification code was sent to {phone}.",
         codeLabel: "Verification code",
         verify: "Verify code",
         verifying: "Verifying...",
-        verified:
-          "Phone number verified successfully.",
+        verified: "Phone number verified successfully.",
         resend: "Resend code",
         skip: "Skip for now",
-        invalidCode:
-          "The code is invalid or has expired.",
-        requestError:
-          "Failed to send the verification code.",
+        invalidCode: "The code is invalid or has expired.",
+        requestError: "Failed to send the verification code.",
         mockNotice:
           "This build doesn't send a real SMS yet (test mode).",
       },
@@ -355,12 +354,9 @@ export const dictionaries = {
       formPlaceholder: "e.g. My main brand",
       loadError: "Failed to load workspaces.",
       createError: "Failed to create the workspace.",
-      emptyTitle:
-        "You haven't created a workspace yet",
-      emptyDesc:
-        "Create a workspace to start adding brands and prompts.",
-      emptyAction:
-        "Create your first workspace",
+      emptyTitle: "You haven't created a workspace yet",
+      emptyDesc: "Create a workspace to start adding brands and prompts.",
+      emptyAction: "Create your first workspace",
       createdAt: "Created {date}",
     },
 
@@ -383,29 +379,23 @@ export const dictionaries = {
       brandsDescription:
         "Each brand has its own Brand Brain, including identity and content rules.",
 
-      emptyBrandsTitle:
-        "You haven't created a brand yet",
+      emptyBrandsTitle: "You haven't created a brand yet",
       emptyBrandsDescription:
         "Create a brand to define its Brand Brain and prompts.",
-      emptyBrandsAction:
-        "+ New brand",
+      emptyBrandsAction: "+ New brand",
 
-      loadError:
-        "Failed to load workspace details.",
+      loadError: "Failed to load workspace details.",
     },
 
     brands: {
       title: "Brands",
-      subtitle:
-        "Each brand has its own Brand Brain (identity + rules).",
+      subtitle: "Each brand has its own Brand Brain (identity + rules).",
       newBrand: "+ New brand",
       loadError: "Failed to load brands.",
-      emptyTitle:
-        "You haven't created a brand yet",
+      emptyTitle: "You haven't created a brand yet",
       emptyDesc:
         "Create a brand first so you can define its Brand Brain and prompts.",
-      emptyAction:
-        "Create your first brand",
+      emptyAction: "Create your first brand",
     },
 
     brandNew: {
@@ -414,37 +404,29 @@ export const dictionaries = {
         "Enter the basics — you'll fill in the Brand Brain details next.",
       name: "Brand name",
       industry: "Industry",
-      industryPlaceholder:
-        "e.g. Fashion, Tech, Food",
+      industryPlaceholder: "e.g. Fashion, Tech, Food",
       website: "Website",
       description: "Description",
       submit: "Create brand",
-      createError:
-        "Failed to create the brand.",
+      createError: "Failed to create the brand.",
     },
 
     brandBrain: {
-      subtitle:
-        "Brand Brain — this brand's identity and content rules",
+      subtitle: "Brand Brain — this brand's identity and content rules",
       identityTitle: "Brand identity",
       saveIdentity: "Save brand identity",
       saved: "Brand Brain saved.",
-      loadError:
-        "Failed to load Brand Brain data.",
-      saveError:
-        "Failed to save changes.",
+      loadError: "Failed to load Brand Brain data.",
+      saveError: "Failed to save changes.",
       rulesTitle: "Content rules",
       newRule: "+ New rule",
       ruleType: "Rule type",
-      ruleTypePlaceholder:
-        "e.g. Forbidden words, Writing style",
+      ruleTypePlaceholder: "e.g. Forbidden words, Writing style",
       ruleTitle: "Title",
       ruleDescription: "Description",
       addRule: "Add rule",
-      addRuleError:
-        "Failed to add the rule.",
-      emptyRules:
-        "No rules added yet",
+      addRuleError: "Failed to add the rule.",
+      emptyRules: "No rules added yet",
 
       fields: {
         mission: "Mission",
@@ -452,10 +434,35 @@ export const dictionaries = {
         target_audience: "Target audience",
         tone_of_voice: "Tone of voice",
         core_values: "Core values",
-        unique_selling_point:
-          "Unique selling point (USP)",
-        brand_personality:
-          "Brand personality",
+        unique_selling_point: "Unique selling point (USP)",
+        brand_personality: "Brand personality",
+      },
+    },
+
+    brandAssets: {
+      title: "Brand Visual Assets",
+      subtitle: "Manage logos, product images, and reference files.",
+      uploadLabel: "Select file",
+      categoryLabel: "Category",
+      upload: "Upload Asset",
+      uploading: "Uploading...",
+      uploadSuccess: "Asset uploaded successfully.",
+      uploadError: "Failed to upload asset.",
+      invalidFileType: "Invalid file type.",
+      delete: "Delete",
+      deleteConfirm: "Are you sure you want to delete this asset?",
+      deleteSuccess: "Asset deleted successfully.",
+      deleteError: "Failed to delete asset.",
+      loadError: "Failed to load brand assets.",
+      empty: "No visual assets added yet.",
+      categories: {
+        logo: "Main Logo",
+        logo_variant: "Logo Variant",
+        brand_photo: "Brand Photo",
+        product: "Product",
+        character: "Character / Agent",
+        reference: "Visual Reference",
+        other: "Other",
       },
     },
 
@@ -463,20 +470,13 @@ export const dictionaries = {
       title: "Prompts",
       newPrompt: "+ New prompt",
       mine: "My prompts ({count})",
-      templates:
-        "Template library ({count})",
-      loadError:
-        "Failed to load prompts.",
-      emptyMineTitle:
-        "You haven't created a prompt yet",
-      emptyMineDesc:
-        "Start from a template or write one from scratch.",
-      emptyMineAction:
-        "Create your first prompt",
-      emptyTemplates:
-        "No templates in the library yet",
-      useTemplate:
-        "Use this template →",
+      templates: "Template library ({count})",
+      loadError: "Failed to load prompts.",
+      emptyMineTitle: "You haven't created a prompt yet",
+      emptyMineDesc: "Start from a template or write one from scratch.",
+      emptyMineAction: "Create your first prompt",
+      emptyTemplates: "No templates in the library yet",
+      useTemplate: "Use this template →",
 
       status: {
         draft: "Draft",
@@ -489,22 +489,14 @@ export const dictionaries = {
       title: "New prompt",
       subtitle:
         "Start from a template, pick a related brand, and edit the final text.",
-      templateLabel:
-        "Template",
-      noTemplate:
-        "No template — start from scratch",
-      brandLabel:
-        "Related brand",
-      noBrand:
-        "No brand",
-      titleLabel:
-        "Title",
-      contentLabel:
-        "Prompt content",
-      submit:
-        "Save prompt",
-      saveError:
-        "Failed to save the prompt.",
+      templateLabel: "Template",
+      noTemplate: "No template — start from scratch",
+      brandLabel: "Related brand",
+      noBrand: "No brand",
+      titleLabel: "Title",
+      contentLabel: "Prompt content",
+      submit: "Save prompt",
+      saveError: "Failed to save the prompt.",
     },
   },
 } as const;
