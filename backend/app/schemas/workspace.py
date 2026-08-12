@@ -1,5 +1,6 @@
 """Pydantic schemas for Workspace."""
 
+from typing import Optional
 from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel
@@ -11,6 +12,12 @@ class WorkspaceBase(BaseModel):
 
 class WorkspaceCreate(WorkspaceBase):
     pass
+
+
+class WorkspaceUpdate(BaseModel):
+    """Partial update - only fields provided are changed."""
+
+    name: Optional[str] = None
 
 
 class WorkspaceRead(WorkspaceBase):
