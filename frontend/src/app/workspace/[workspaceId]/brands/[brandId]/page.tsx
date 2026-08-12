@@ -23,7 +23,7 @@ import {
   listBrandAssets,
   uploadBrandAsset,
 } from "@/services/brand-asset.service";
-import type { Brand, BrandAsset, BrandAssetCategory, BrandIdentity, BrandRule } from "@/types";
+import type { Brand, BrandAsset, AssetCategory, BrandIdentity, BrandRule } from "@/types";
 
 const ASSET_CATEGORY_KEYS: BrandAssetCategory[] = [
   "logo",
