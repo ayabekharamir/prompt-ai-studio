@@ -35,6 +35,11 @@ const ASSET_CATEGORY_KEYS: AssetCategory[] = [
   "other",
 ];
 
+function getAssetDisplayName(asset: BrandAsset): string {
+  const parts = asset.file_path.split("/");
+  return parts[parts.length - 1] || asset.file_path;
+}
+
 const IDENTITY_FIELD_KEYS: (keyof BrandIdentity)[] = [
   "mission",
   "vision",
@@ -83,7 +88,7 @@ function AssetThumbnail({ asset }: { asset: BrandAsset }) {
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={objectUrl}
-      alt={asset.original_filename || asset.filename}
+      alt={getAssetDisplayName(asset)}
       className="h-16 w-16 rounded-lg object-cover"
     />
   );
@@ -556,7 +561,7 @@ function BrandBrainContent() {
                     <AssetThumbnail asset={asset} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-fg">
-                        {asset.original_filename || asset.filename}
+                        {getAssetDisplayName(asset)}
                       </p>
                       <p className="text-xs text-fg-subtle">
                         {t(`brandAssets.categories.${asset.category}`)}
