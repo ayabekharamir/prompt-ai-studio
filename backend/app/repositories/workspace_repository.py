@@ -22,3 +22,25 @@ class WorkspaceRepository(BaseRepository[Workspace]):
         member = WorkspaceMember(workspace_id=workspace_id, user_id=user_id, role=role)
         self.db.add(member)
         return member
+
+    def is_member(self, workspace_id, user_id) -> bool:
+        """
+        True if user_id is the workspace owner or a WorkspaceMember of
+        workspace_id. Used to authorize access to brand-scoped resources
+        (e.g. Brand Assets) so a client-provided brand_id can never be
+        used to reach another workspace's data.
+        """
+        workspace = self.get(workspace_id)
+        if workspace is None:
+            return False
+        if str(workspace.owner_id) == str(user_id):
+            return True
+        return (
+            self.db.query(WorkspaceMember)
+            .filter(
+                WorkspaceMember.workspace_id == workspace_id,
+                WorkspaceMember.user_id == user_id,
+            )
+            .first()
+            is not None
+        )
