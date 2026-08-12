@@ -65,14 +65,16 @@ export type AssetCategory =
 export interface BrandAsset {
   id: string;
   brand_id: string;
-  file_path: string;
-  file_url: string;
-  file_type: string;
+  filename: string;
+  original_filename?: string | null;
+  mime_type: string;
+  size_bytes: number;
   category: AssetCategory;
-  file_size?: number | null;
-  width?: number | null;
-  height?: number | null;
+  description?: string | null;
   created_at: string;
+  // Relative API path (with auth) the frontend fetches to get the file
+  // bytes, e.g. "/assets/{id}/file" - see BrandAssetRead in the backend.
+  url: string;
 }
 
 export interface PromptTemplate {
