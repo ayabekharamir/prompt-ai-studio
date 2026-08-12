@@ -93,7 +93,8 @@ export const dictionaries = {
         skip: "فعلاً رد شو",
         invalidCode: "کد وارد شده نامعتبر یا منقضی شده است.",
         requestError: "ارسال کد با خطا مواجه شد.",
-        mockNotice: "در این نسخه، پیامک واقعی ارسال نمی‌شود (حالت آزمایشی).",
+        mockNotice:
+          "در این نسخه، پیامک واقعی ارسال نمی‌شود (حالت آزمایشی).",
       },
     },
 
@@ -119,9 +120,24 @@ export const dictionaries = {
     },
 
     workspaceOverview: {
+      title: "فضای کاری",
+      createdAt: "ایجاد شده در {date}",
+
       brandsCount: "برندها",
       promptsCount: "پرامپت‌ها",
+
+      newBrand: "+ برند جدید",
       openPrompts: "باز کردن پرامپت‌ها",
+
+      brandsTitle: "برندها",
+      brandsDescription:
+        "هر برند یک مغز برند جداگانه شامل هویت و قوانین محتوایی دارد.",
+
+      emptyBrandsTitle: "هنوز هیچ برندی ایجاد نکرده‌اید",
+      emptyBrandsDescription:
+        "یک برند ایجاد کنید تا بتوانید مغز برند و پرامپت‌های آن را تعریف کنید.",
+      emptyBrandsAction: "+ برند جدید",
+
       loadError: "دریافت اطلاعات فضای کاری با خطا مواجه شد.",
     },
 
@@ -233,6 +249,7 @@ export const dictionaries = {
         "ذخیره پرامپت با خطا مواجه شد.",
     },
   },
+
   en: {
     common: {
       appName: "Prompt AI Studio",
@@ -246,28 +263,34 @@ export const dictionaries = {
       comingSoon: "Coming soon",
       or: "or",
     },
+
     theme: {
       light: "Light",
       dark: "Dark",
       toggle: "Toggle light/dark theme",
     },
+
     lang: {
       toggle: "Switch language",
     },
+
     nav: {
       logout: "Log out",
       dashboard: "Dashboard",
       profile: "Profile",
     },
+
     home: {
       title: "Prompt AI Studio",
       subtitle: "Build Your Brand's AI Brain",
     },
+
     auth: {
       loginTab: "Log in",
       registerTab: "Sign up",
       emailTab: "Email",
       phoneTab: "Phone number",
+
       login: {
         title: "Log in",
         subtitle: "Sign in to your Prompt AI Studio account.",
@@ -281,9 +304,11 @@ export const dictionaries = {
         errorInvalid: "Invalid email/phone or password.",
         googleButton: "Continue with Google",
       },
+
       register: {
         title: "Create your account",
-        subtitle: "Takes a few seconds — then you can set up your first workspace.",
+        subtitle:
+          "Takes a few seconds — then you can set up your first workspace.",
         fullName: "Full name",
         email: "Email",
         phone: "Phone number",
@@ -292,123 +317,194 @@ export const dictionaries = {
         submitting: "Signing up...",
         haveAccount: "Already have an account?",
         loginLink: "Log in",
-        errorGeneric: "Sign up failed. This may already be in use.",
+        errorGeneric:
+          "Sign up failed. This may already be in use.",
         googleButton: "Sign up with Google",
       },
+
       otp: {
         title: "Verify your phone number",
-        description: "Enter the code that was texted to your phone.",
+        description:
+          "Enter the code that was texted to your phone.",
         sendCode: "Send verification code",
         sending: "Sending...",
-        codeSentTo: "A verification code was sent to {phone}.",
+        codeSentTo:
+          "A verification code was sent to {phone}.",
         codeLabel: "Verification code",
         verify: "Verify code",
         verifying: "Verifying...",
-        verified: "Phone number verified successfully.",
+        verified:
+          "Phone number verified successfully.",
         resend: "Resend code",
         skip: "Skip for now",
-        invalidCode: "The code is invalid or has expired.",
-        requestError: "Failed to send the verification code.",
-        mockNotice: "This build doesn't send a real SMS yet (test mode).",
+        invalidCode:
+          "The code is invalid or has expired.",
+        requestError:
+          "Failed to send the verification code.",
+        mockNotice:
+          "This build doesn't send a real SMS yet (test mode).",
       },
     },
+
     dashboard: {
       title: "Your workspaces",
-      subtitle: "Each workspace can hold several brands and its own prompt library.",
+      subtitle:
+        "Each workspace can hold several brands and its own prompt library.",
       newWorkspace: "+ New workspace",
       formLabel: "Workspace name",
       formPlaceholder: "e.g. My main brand",
       loadError: "Failed to load workspaces.",
       createError: "Failed to create the workspace.",
-      emptyTitle: "You haven't created a workspace yet",
-      emptyDesc: "Create a workspace to start adding brands and prompts.",
-      emptyAction: "Create your first workspace",
+      emptyTitle:
+        "You haven't created a workspace yet",
+      emptyDesc:
+        "Create a workspace to start adding brands and prompts.",
+      emptyAction:
+        "Create your first workspace",
       createdAt: "Created {date}",
     },
+
     workspaceNav: {
       brands: "Brands",
       prompts: "Prompts",
     },
+
     workspaceOverview: {
+      title: "Workspace",
+      createdAt: "Created {date}",
+
       brandsCount: "Brands",
       promptsCount: "Prompts",
+
+      newBrand: "+ New brand",
       openPrompts: "Open Prompts",
-      loadError: "Failed to load workspace details.",
+
+      brandsTitle: "Brands",
+      brandsDescription:
+        "Each brand has its own Brand Brain, including identity and content rules.",
+
+      emptyBrandsTitle:
+        "You haven't created a brand yet",
+      emptyBrandsDescription:
+        "Create a brand to define its Brand Brain and prompts.",
+      emptyBrandsAction:
+        "+ New brand",
+
+      loadError:
+        "Failed to load workspace details.",
     },
+
     brands: {
       title: "Brands",
-      subtitle: "Each brand has its own Brand Brain (identity + rules).",
+      subtitle:
+        "Each brand has its own Brand Brain (identity + rules).",
       newBrand: "+ New brand",
       loadError: "Failed to load brands.",
-      emptyTitle: "You haven't created a brand yet",
-      emptyDesc: "Create a brand first so you can define its Brand Brain and prompts.",
-      emptyAction: "Create your first brand",
+      emptyTitle:
+        "You haven't created a brand yet",
+      emptyDesc:
+        "Create a brand first so you can define its Brand Brain and prompts.",
+      emptyAction:
+        "Create your first brand",
     },
+
     brandNew: {
       title: "New brand",
-      subtitle: "Enter the basics — you'll fill in the Brand Brain details next.",
+      subtitle:
+        "Enter the basics — you'll fill in the Brand Brain details next.",
       name: "Brand name",
       industry: "Industry",
-      industryPlaceholder: "e.g. Fashion, Tech, Food",
+      industryPlaceholder:
+        "e.g. Fashion, Tech, Food",
       website: "Website",
       description: "Description",
       submit: "Create brand",
-      createError: "Failed to create the brand.",
+      createError:
+        "Failed to create the brand.",
     },
+
     brandBrain: {
-      subtitle: "Brand Brain — this brand's identity and content rules",
+      subtitle:
+        "Brand Brain — this brand's identity and content rules",
       identityTitle: "Brand identity",
       saveIdentity: "Save brand identity",
       saved: "Brand Brain saved.",
-      loadError: "Failed to load Brand Brain data.",
-      saveError: "Failed to save changes.",
+      loadError:
+        "Failed to load Brand Brain data.",
+      saveError:
+        "Failed to save changes.",
       rulesTitle: "Content rules",
       newRule: "+ New rule",
       ruleType: "Rule type",
-      ruleTypePlaceholder: "e.g. Forbidden words, Writing style",
+      ruleTypePlaceholder:
+        "e.g. Forbidden words, Writing style",
       ruleTitle: "Title",
       ruleDescription: "Description",
       addRule: "Add rule",
-      addRuleError: "Failed to add the rule.",
-      emptyRules: "No rules added yet",
+      addRuleError:
+        "Failed to add the rule.",
+      emptyRules:
+        "No rules added yet",
+
       fields: {
         mission: "Mission",
         vision: "Vision",
         target_audience: "Target audience",
         tone_of_voice: "Tone of voice",
         core_values: "Core values",
-        unique_selling_point: "Unique selling point (USP)",
-        brand_personality: "Brand personality",
+        unique_selling_point:
+          "Unique selling point (USP)",
+        brand_personality:
+          "Brand personality",
       },
     },
+
     prompts: {
       title: "Prompts",
       newPrompt: "+ New prompt",
       mine: "My prompts ({count})",
-      templates: "Template library ({count})",
-      loadError: "Failed to load prompts.",
-      emptyMineTitle: "You haven't created a prompt yet",
-      emptyMineDesc: "Start from a template or write one from scratch.",
-      emptyMineAction: "Create your first prompt",
-      emptyTemplates: "No templates in the library yet",
-      useTemplate: "Use this template →",
+      templates:
+        "Template library ({count})",
+      loadError:
+        "Failed to load prompts.",
+      emptyMineTitle:
+        "You haven't created a prompt yet",
+      emptyMineDesc:
+        "Start from a template or write one from scratch.",
+      emptyMineAction:
+        "Create your first prompt",
+      emptyTemplates:
+        "No templates in the library yet",
+      useTemplate:
+        "Use this template →",
+
       status: {
         draft: "Draft",
         saved: "Saved",
         archived: "Archived",
       },
     },
+
     promptNew: {
       title: "New prompt",
-      subtitle: "Start from a template, pick a related brand, and edit the final text.",
-      templateLabel: "Template",
-      noTemplate: "No template — start from scratch",
-      brandLabel: "Related brand",
-      noBrand: "No brand",
-      titleLabel: "Title",
-      contentLabel: "Prompt content",
-      submit: "Save prompt",
-      saveError: "Failed to save the prompt.",
+      subtitle:
+        "Start from a template, pick a related brand, and edit the final text.",
+      templateLabel:
+        "Template",
+      noTemplate:
+        "No template — start from scratch",
+      brandLabel:
+        "Related brand",
+      noBrand:
+        "No brand",
+      titleLabel:
+        "Title",
+      contentLabel:
+        "Prompt content",
+      submit:
+        "Save prompt",
+      saveError:
+        "Failed to save the prompt.",
     },
   },
 } as const;
