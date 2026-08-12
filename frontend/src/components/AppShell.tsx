@@ -9,8 +9,14 @@ import { useLanguage } from "@/lib/i18n/language-context";
 /**
  * Shared shell for authenticated pages that have a desktop sidebar +
  * mobile drawer (currently: /dashboard). Centralizes the Navbar /
- * Sidebar / MobileSidebar composition and the RTL-aware ordering logic
- * that used to be duplicated inline on the dashboard page.
+ * Sidebar / MobileSidebar composition and the RTL-aware layout.
+ *
+ * Note: no manual `order` classes are used for the aside/main split.
+ * When a flex container (default flex-direction: row) has dir="rtl",
+ * the browser already mirrors the main axis automatically (DOM order
+ * aside -> main places aside on the right in RTL, left in LTR). Adding
+ * explicit lg:order-1/2 on top of that double-flips it back to the LTR
+ * arrangement regardless of language, which was the bug.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { lang } = useLanguage();
@@ -26,15 +32,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex min-h-[calc(100vh-73px)] lg:min-h-screen">
           {/* Desktop sidebar */}
-          {/* Desktop sidebar */}
           <aside className="hidden lg:block">
             <DashboardSidebar />
           </aside>
 
           {/* Main content */}
           <main className="min-w-0 flex-1">
-            {children}
-          </main>
             {children}
           </main>
         </div>
