@@ -8,6 +8,8 @@ import { Card, Alert, EmptyState, Spinner } from "@/components/ui/Card";
 
 import { useLanguage } from "@/lib/i18n/language-context";
 import { listWorkspaces, createWorkspace } from "@/services/workspace.service";
+import { listBrands } from "@/services/brand.service";
+import { listPrompts } from "@/services/prompt.service";
 
 import type { Workspace } from "@/types";
 import { formatDate } from "@/utils";
@@ -18,6 +20,14 @@ function DashboardContent() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Real totals across all of the user's workspaces. There is no
+  // aggregate backend endpoint for this, so we fetch brands/prompts
+  // per workspace and sum client-side (a handful of requests — fine
+  // for a normal number of workspaces; would need a backend aggregate
+  // endpoint to stay cheap if that number grows a lot).
+  const [brandsCount, setBrandsCount] = useState(0);
+  const [promptsCount, setPromptsCount] = useState(0);
 
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
@@ -32,6 +42,14 @@ function DashboardContent() {
     try {
       const data = await listWorkspaces();
       setWorkspaces(data);
+
+      const counts = await Promise.all(
+        data.map((ws) =>
+          Promise.all([listBrands(ws.id), listPrompts(ws.id)])
+        )
+      );
+      setBrandsCount(counts.reduce((sum, [brands]) => sum + brands.length, 0));
+      setPromptsCount(counts.reduce((sum, [, prompts]) => sum + prompts.length, 0));
     } catch {
       setError(
         isRTL
@@ -132,7 +150,7 @@ function DashboardContent() {
                 </p>
 
                 <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-                  0
+                  {brandsCount}
                 </h2>
 
                 <p className="mt-1 text-xs text-fg-subtle">
@@ -146,7 +164,7 @@ function DashboardContent() {
                 </p>
 
                 <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-                  0
+                  {promptsCount}
                 </h2>
 
                 <p className="mt-1 text-xs text-fg-subtle">
@@ -159,6 +177,12 @@ function DashboardContent() {
                   {isRTL ? "اجراهای هوش مصنوعی" : "AI Executions"}
                 </p>
 
+                {/* Intentionally still 0: there's no per-workspace or
+                    aggregate executions endpoint, only per-prompt
+                    (listPromptExecutions(promptId)). Computing a real
+                    total would mean an extra request per prompt across
+                    every workspace — real backend work, reported rather
+                    than built here per scope. */}
                 <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
                   0
                 </h2>
