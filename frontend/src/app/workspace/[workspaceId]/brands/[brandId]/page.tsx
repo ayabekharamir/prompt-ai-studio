@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { AuthGuard } from "@/components/AuthGuard";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/Button";
-import { Field, Input, Textarea } from "@/components/ui/Input";
+import { Field, Input, Select, Textarea } from "@/components/ui/Input";
 import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
 import { useLanguage } from "@/lib/i18n/language-context";
 import {
@@ -17,7 +17,23 @@ import {
   updateBrandRule,
   upsertBrandIdentity,
 } from "@/services/brand.service";
-import type { Brand, BrandIdentity, BrandRule } from "@/types";
+import {
+  deleteBrandAsset,
+  getBrandAssetObjectUrl,
+  listBrandAssets,
+  uploadBrandAsset,
+} from "@/services/brand-asset.service";
+import type { Brand, BrandAsset, BrandAssetCategory, BrandIdentity, BrandRule } from "@/types";
+
+const ASSET_CATEGORY_KEYS: BrandAssetCategory[] = [
+  "logo",
+  "logo_variant",
+  "brand_photo",
+  "product",
+  "character",
+  "reference",
+  "other",
+];
 
 const IDENTITY_FIELD_KEYS: (keyof BrandIdentity)[] = [
   "mission",
@@ -29,24 +45,71 @@ const IDENTITY_FIELD_KEYS: (keyof BrandIdentity)[] = [
   "brand_personality",
 ];
 
+function AssetThumbnail({ asset }: { asset: BrandAsset }) {
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let revoked = false;
+    let currentUrl: string | null = null;
+
+    getBrandAssetObjectUrl(asset)
+      .then((url) => {
+        if (revoked) {
+          URL.revokeObjectURL(url);
+          return;
+        }
+        currentUrl = url;
+        setObjectUrl(url);
+      })
+      .catch(() => {
+        // Silently fall back to the filename-only view below.
+      });
+
+    return () => {
+      revoked = true;
+      if (currentUrl) URL.revokeObjectURL(currentUrl);
+    };
+  }, [asset]);
+
+  if (!objectUrl) {
+    return (
+      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-surface-muted">
+        <Spinner className="h-4 w-4" />
+      </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={objectUrl}
+      alt={asset.original_filename || asset.filename}
+      className="h-16 w-16 rounded-lg object-cover"
+    />
+  );
+}
+
 function BrandBrainContent() {
   const { brandId } = useParams<{ workspaceId: string; brandId: string }>();
   const { t } = useLanguage();
+
+  // --- Brand & Identity ---
   const [brand, setBrand] = useState<Brand | null>(null);
   const [identity, setIdentity] = useState<Partial<BrandIdentity>>({});
-  const [rules, setRules] = useState<BrandRule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  // --- Brand Rules State ---
+  const [rules, setRules] = useState<BrandRule[]>([]);
   const [showRuleForm, setShowRuleForm] = useState(false);
   const [ruleType, setRuleType] = useState("");
   const [ruleTitle, setRuleTitle] = useState("");
   const [ruleDescription, setRuleDescription] = useState("");
   const [isAddingRule, setIsAddingRule] = useState(false);
 
-  // --- حالت ویرایش ---
+  // --- Rule Edit & Delete State ---
   const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
   const [editRuleType, setEditRuleType] = useState("");
   const [editRuleTitle, setEditRuleTitle] = useState("");
@@ -54,6 +117,17 @@ function BrandBrainContent() {
   const [isUpdatingRule, setIsUpdatingRule] = useState(false);
   const [deletingRuleId, setDeletingRuleId] = useState<string | null>(null);
 
+  // --- Brand Assets State ---
+  const [assets, setAssets] = useState<BrandAsset[]>([]);
+  const [assetsLoading, setAssetsLoading] = useState(true);
+  const [assetError, setAssetError] = useState<string | null>(null);
+  const [assetMessage, setAssetMessage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<BrandAssetCategory>("other");
+  const [isUploading, setIsUploading] = useState(false);
+  const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
+
+  // --- Data Loading ---
   async function loadAll() {
     setIsLoading(true);
     try {
@@ -72,11 +146,25 @@ function BrandBrainContent() {
     }
   }
 
+  async function loadAssets() {
+    setAssetsLoading(true);
+    try {
+      const data = await listBrandAssets(brandId);
+      setAssets(data);
+    } catch {
+      setAssetError(t("brandAssets.loadError"));
+    } finally {
+      setAssetsLoading(false);
+    }
+  }
+
   useEffect(() => {
     loadAll();
+    loadAssets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brandId]);
 
+  // --- Handlers: Identity ---
   async function handleSaveIdentity(e: React.FormEvent) {
     e.preventDefault();
     setIsSaving(true);
@@ -93,6 +181,7 @@ function BrandBrainContent() {
     }
   }
 
+  // --- Handlers: Rules ---
   async function handleAddRule(e: React.FormEvent) {
     e.preventDefault();
     setIsAddingRule(true);
@@ -154,7 +243,7 @@ function BrandBrainContent() {
   }
 
   async function handleDeleteRule(ruleId: string) {
-    if (!confirm("آیا از حذف این قانون مطمئن هستید؟")) return;
+    if (!window.confirm("آیا از حذف این قانون مطمئن هستید؟")) return;
 
     setDeletingRuleId(ruleId);
     setError(null);
@@ -167,6 +256,48 @@ function BrandBrainContent() {
       setError("خطا در حذف قانون");
     } finally {
       setDeletingRuleId(null);
+    }
+  }
+
+  // --- Handlers: Assets ---
+  async function handleUploadAsset(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    setAssetError(null);
+    setAssetMessage(null);
+    try {
+      const uploaded = await uploadBrandAsset(brandId, selectedFile, selectedCategory);
+      setAssets((prev) => [uploaded, ...prev]);
+      setSelectedFile(null);
+      setSelectedCategory("other");
+      setAssetMessage(t("brandAssets.uploadSuccess"));
+    } catch (err: any) {
+      if (err?.response?.status === 400) {
+        setAssetError(t("brandAssets.invalidFileType"));
+      } else {
+        setAssetError(t("brandAssets.uploadError"));
+      }
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handleDeleteAsset(assetId: string) {
+    if (!window.confirm(t("brandAssets.deleteConfirm"))) return;
+
+    setDeletingAssetId(assetId);
+    setAssetError(null);
+    setAssetMessage(null);
+    try {
+      await deleteBrandAsset(assetId);
+      setAssets((prev) => prev.filter((a) => a.id !== assetId));
+      setAssetMessage(t("brandAssets.deleteSuccess"));
+    } catch {
+      setAssetError(t("brandAssets.deleteError"));
+    } finally {
+      setDeletingAssetId(null);
     }
   }
 
@@ -199,6 +330,7 @@ function BrandBrainContent() {
           </div>
         )}
 
+        {/* --- Identity Section --- */}
         <Card className="mt-6">
           <h2 className="text-lg font-semibold text-fg">{t("brandBrain.identityTitle")}</h2>
           <form onSubmit={handleSaveIdentity} className="mt-4 space-y-4">
@@ -220,6 +352,7 @@ function BrandBrainContent() {
           </form>
         </Card>
 
+        {/* --- Rules Section --- */}
         <Card className="mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-fg">{t("brandBrain.rulesTitle")}</h2>
@@ -316,39 +449,126 @@ function BrandBrainContent() {
                         </div>
                       </form>
                     ) : (
-                      <>
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-medium text-fg">{rule.title}</span>
-                              <span className="text-xs text-fg-subtle shrink-0">
-                                {rule.rule_type}
-                              </span>
-                            </div>
-                            {rule.description && (
-                              <p className="mt-1 text-sm text-fg-muted">{rule.description}</p>
-                            )}
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-medium text-fg">{rule.title}</span>
+                            <span className="shrink-0 text-xs text-fg-subtle">
+                              {rule.rule_type}
+                            </span>
                           </div>
-                          <div className="flex shrink-0 gap-2">
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              onClick={() => startEditRule(rule)}
-                            >
-                              ویرایش
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              isLoading={deletingRuleId === rule.id}
-                              onClick={() => handleDeleteRule(rule.id)}
-                            >
-                              حذف
-                            </Button>
-                          </div>
+                          {rule.description && (
+                            <p className="mt-1 text-sm text-fg-muted">{rule.description}</p>
+                          )}
                         </div>
-                      </>
+                        <div className="flex shrink-0 gap-2">
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => startEditRule(rule)}
+                          >
+                            ویرایش
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            isLoading={deletingRuleId === rule.id}
+                            onClick={() => handleDeleteRule(rule.id)}
+                          >
+                            حذف
+                          </Button>
+                        </div>
+                      </div>
                     )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </Card>
+
+        {/* --- Assets Section --- */}
+        <Card className="mt-6">
+          <h2 className="text-lg font-semibold text-fg">{t("brandAssets.title")}</h2>
+          <p className="mt-1 text-sm text-fg-muted">{t("brandAssets.subtitle")}</p>
+
+          {assetError && (
+            <div className="mt-4">
+              <Alert variant="error">{assetError}</Alert>
+            </div>
+          )}
+          {assetMessage && (
+            <div className="mt-4">
+              <Alert variant="success">{assetMessage}</Alert>
+            </div>
+          )}
+
+          <form
+            onSubmit={handleUploadAsset}
+            className="mt-4 flex flex-col gap-3 rounded-lg bg-surface-muted p-4 sm:flex-row sm:items-end"
+          >
+            <div className="flex-1">
+              <Field label={t("brandAssets.uploadLabel")} htmlFor="asset_file">
+                <Input
+                  id="asset_file"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                />
+              </Field>
+            </div>
+            <div className="sm:w-56">
+              <Field label={t("brandAssets.categoryLabel")} htmlFor="asset_category">
+                <Select
+                  id="asset_category"
+                  value={selectedCategory}
+                  onChange={(e) =>
+                    setSelectedCategory(e.target.value as BrandAssetCategory)
+                  }
+                >
+                  {ASSET_CATEGORY_KEYS.map((key) => (
+                    <option key={key} value={key}>
+                      {t(`brandAssets.categories.${key}`)}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+            </div>
+            <Button type="submit" disabled={!selectedFile} isLoading={isUploading}>
+              {isUploading ? t("brandAssets.uploading") : t("brandAssets.upload")}
+            </Button>
+          </form>
+
+          <div className="mt-4">
+            {assetsLoading ? (
+              <div className="flex justify-center py-8">
+                <Spinner />
+              </div>
+            ) : assets.length === 0 ? (
+              <EmptyState title={t("brandAssets.empty")} />
+            ) : (
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {assets.map((asset) => (
+                  <li
+                    key={asset.id}
+                    className="flex items-center gap-3 rounded-lg border border-border p-3"
+                  >
+                    <AssetThumbnail asset={asset} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-fg">
+                        {asset.original_filename || asset.filename}
+                      </p>
+                      <p className="text-xs text-fg-subtle">
+                        {t(`brandAssets.categories.${asset.category}`)}
+                      </p>
+                    </div>
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDeleteAsset(asset.id)}
+                      isLoading={deletingAssetId === asset.id}
+                    >
+                      {t("brandAssets.delete")}
+                    </Button>
                   </li>
                 ))}
               </ul>
