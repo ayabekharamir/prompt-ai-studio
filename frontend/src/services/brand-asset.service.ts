@@ -34,6 +34,6 @@ export async function deleteBrandAsset(assetId: string): Promise<void> {
  * with it (e.g. on unmount) to avoid leaking memory.
  */
 export async function getBrandAssetObjectUrl(asset: BrandAsset): Promise<string> {
-  const res = await api.get(asset.file_url, { responseType: "blob" });
+  const res = await api.get(asset.url, { responseType: "blob" });
   return URL.createObjectURL(res.data as Blob);
 }
