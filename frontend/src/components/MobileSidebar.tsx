@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { getMobileNavItems } from "@/lib/navigation";
+import { getLastWorkspaceId, getMobileNavItems } from "@/lib/navigation";
 import { classNames } from "@/utils";
 
 export function MobileSidebar() {
@@ -13,7 +13,15 @@ export function MobileSidebar() {
   const { user, logout } = useAuth();
 
   const isRTL = lang === "fa";
-  const navItems = getMobileNavItems();
+
+  // localStorage is only available client-side; read it after mount so
+  // server-rendered and first-client-render markup match.
+  const [lastWorkspaceId, setLastWorkspaceIdState] = useState<string | null>(null);
+  useEffect(() => {
+    setLastWorkspaceIdState(getLastWorkspaceId());
+  }, []);
+
+  const navItems = getMobileNavItems(lastWorkspaceId);
 
   // Lock body scroll while the drawer is open so the page behind it
   // can't be scrolled through the overlay.

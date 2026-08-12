@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { getDashboardNavItems, getLastWorkspaceId } from "@/lib/navigation";
 import { classNames } from "@/utils";
 
 export function DashboardSidebar() {
@@ -9,48 +11,18 @@ export function DashboardSidebar() {
 
   const isRTL = lang === "fa";
 
-  const menuItems = [
-    {
-      label: isRTL ? "داشبورد" : "Dashboard",
-      href: "/dashboard",
-      icon: "⌂",
-    },
-    {
-      label: isRTL ? "فضاهای کاری" : "Workspaces",
-      href: "/dashboard",
-      icon: "▣",
-    },
-    {
-      label: isRTL ? "برندها" : "Brands",
-      href: "/brands",
-      icon: "◇",
-    },
-    {
-      label: isRTL ? "پرامپت‌ها" : "Prompts",
-      href: "/prompts",
-      icon: "▤",
-    },
-    {
-      label: isRTL ? "قالب پرامپت" : "Prompt Templates",
-      href: "/prompts/templates",
-      icon: "▦",
-    },
-    {
-      label: isRTL ? "اجراهای هوش مصنوعی" : "AI Executions",
-      href: "/executions",
-      icon: "▶",
-    },
-    {
-      label: isRTL ? "تنظیمات" : "Settings",
-      href: "/settings",
-      icon: "⚙",
-    },
-    {
-      label: isRTL ? "راهنما" : "Help",
-      href: "/help",
-      icon: "?",
-    },
-  ];
+  // localStorage is only available client-side; read it after mount so
+  // server-rendered and first-client-render markup match.
+  const [lastWorkspaceId, setLastWorkspaceIdState] = useState<string | null>(null);
+  useEffect(() => {
+    setLastWorkspaceIdState(getLastWorkspaceId());
+  }, []);
+
+  const menuItems = getDashboardNavItems(lastWorkspaceId).map((item) => ({
+    label: isRTL ? item.label.fa : item.label.en,
+    href: item.href,
+    icon: item.icon,
+  }));
 
   return (
 <aside
