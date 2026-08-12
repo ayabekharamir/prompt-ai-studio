@@ -26,12 +26,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="flex min-h-[calc(100vh-73px)] lg:min-h-screen">
           {/* Desktop sidebar */}
-          <aside className={isRTL ? "hidden lg:block lg:order-2" : "hidden lg:block lg:order-1"}>
+          {/* Desktop sidebar */}
+          <aside className="hidden lg:block">
             <DashboardSidebar />
           </aside>
 
           {/* Main content */}
-          <main className={isRTL ? "min-w-0 flex-1 lg:order-1" : "min-w-0 flex-1 lg:order-2"}>
+          <main className="min-w-0 flex-1">
+            {children}
+          </main>
             {children}
           </main>
         </div>
