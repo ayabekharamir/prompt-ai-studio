@@ -10,9 +10,11 @@ import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
 import { useLanguage } from "@/lib/i18n/language-context";
 import {
   createBrandRule,
+  deleteBrandRule,
   getBrand,
   getBrandIdentity,
   listBrandRules,
+  updateBrandRule,
   upsertBrandIdentity,
 } from "@/services/brand.service";
 import type { Brand, BrandIdentity, BrandRule } from "@/types";
@@ -43,6 +45,14 @@ function BrandBrainContent() {
   const [ruleTitle, setRuleTitle] = useState("");
   const [ruleDescription, setRuleDescription] = useState("");
   const [isAddingRule, setIsAddingRule] = useState(false);
+
+  // --- حالت ویرایش ---
+  const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
+  const [editRuleType, setEditRuleType] = useState("");
+  const [editRuleTitle, setEditRuleTitle] = useState("");
+  const [editRuleDescription, setEditRuleDescription] = useState("");
+  const [isUpdatingRule, setIsUpdatingRule] = useState(false);
+  const [deletingRuleId, setDeletingRuleId] = useState<string | null>(null);
 
   async function loadAll() {
     setIsLoading(true);
@@ -105,6 +115,61 @@ function BrandBrainContent() {
     }
   }
 
+  function startEditRule(rule: BrandRule) {
+    setEditingRuleId(rule.id);
+    setEditRuleType(rule.rule_type);
+    setEditRuleTitle(rule.title);
+    setEditRuleDescription(rule.description || "");
+    setShowRuleForm(false);
+  }
+
+  function cancelEditRule() {
+    setEditingRuleId(null);
+    setEditRuleType("");
+    setEditRuleTitle("");
+    setEditRuleDescription("");
+  }
+
+  async function handleUpdateRule(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingRuleId) return;
+
+    setIsUpdatingRule(true);
+    setError(null);
+    try {
+      await updateBrandRule(editingRuleId, {
+        rule_type: editRuleType,
+        title: editRuleTitle,
+        description: editRuleDescription || undefined,
+      });
+      cancelEditRule();
+      const rulesData = await listBrandRules(brandId);
+      setRules(rulesData);
+      setSaveMessage("قانون با موفقیت ویرایش شد");
+    } catch {
+      setError("خطا در ویرایش قانون");
+    } finally {
+      setIsUpdatingRule(false);
+    }
+  }
+
+  async function handleDeleteRule(ruleId: string) {
+    if (!confirm("آیا از حذف این قانون مطمئن هستید؟")) return;
+
+    setDeletingRuleId(ruleId);
+    setError(null);
+    try {
+      await deleteBrandRule(ruleId);
+      const rulesData = await listBrandRules(brandId);
+      setRules(rulesData);
+      setSaveMessage("قانون حذف شد");
+    } catch {
+      setError("خطا در حذف قانون");
+    } finally {
+      setDeletingRuleId(null);
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-bg">
@@ -158,7 +223,13 @@ function BrandBrainContent() {
         <Card className="mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-fg">{t("brandBrain.rulesTitle")}</h2>
-            <Button variant="secondary" onClick={() => setShowRuleForm((v) => !v)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowRuleForm((v) => !v);
+                cancelEditRule();
+              }}
+            >
               {t("brandBrain.newRule")}
             </Button>
           </div>
@@ -182,7 +253,10 @@ function BrandBrainContent() {
                   onChange={(e) => setRuleTitle(e.target.value)}
                 />
               </Field>
-              <Field label={`${t("brandBrain.ruleDescription")} (${t("common.optional")})`} htmlFor="rule_description">
+              <Field
+                label={`${t("brandBrain.ruleDescription")} (${t("common.optional")})`}
+                htmlFor="rule_description"
+              >
                 <Textarea
                   id="rule_description"
                   rows={2}
@@ -203,12 +277,77 @@ function BrandBrainContent() {
               <ul className="space-y-3">
                 {rules.map((rule) => (
                   <li key={rule.id} className="rounded-lg border border-border p-3">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-fg">{rule.title}</span>
-                      <span className="text-xs text-fg-subtle">{rule.rule_type}</span>
-                    </div>
-                    {rule.description && (
-                      <p className="mt-1 text-sm text-fg-muted">{rule.description}</p>
+                    {editingRuleId === rule.id ? (
+                      <form onSubmit={handleUpdateRule} className="space-y-3">
+                        <Field label={t("brandBrain.ruleType")} htmlFor={`edit_type_${rule.id}`}>
+                          <Input
+                            id={`edit_type_${rule.id}`}
+                            required
+                            value={editRuleType}
+                            onChange={(e) => setEditRuleType(e.target.value)}
+                          />
+                        </Field>
+                        <Field label={t("brandBrain.ruleTitle")} htmlFor={`edit_title_${rule.id}`}>
+                          <Input
+                            id={`edit_title_${rule.id}`}
+                            required
+                            value={editRuleTitle}
+                            onChange={(e) => setEditRuleTitle(e.target.value)}
+                          />
+                        </Field>
+                        <Field
+                          label={`${t("brandBrain.ruleDescription")} (${t("common.optional")})`}
+                          htmlFor={`edit_desc_${rule.id}`}
+                        >
+                          <Textarea
+                            id={`edit_desc_${rule.id}`}
+                            rows={2}
+                            value={editRuleDescription}
+                            onChange={(e) => setEditRuleDescription(e.target.value)}
+                          />
+                        </Field>
+                        <div className="flex gap-2">
+                          <Button type="submit" isLoading={isUpdatingRule}>
+                            ذخیره تغییرات
+                          </Button>
+                          <Button type="button" variant="secondary" onClick={cancelEditRule}>
+                            انصراف
+                          </Button>
+                        </div>
+                      </form>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-medium text-fg">{rule.title}</span>
+                              <span className="text-xs text-fg-subtle shrink-0">
+                                {rule.rule_type}
+                              </span>
+                            </div>
+                            {rule.description && (
+                              <p className="mt-1 text-sm text-fg-muted">{rule.description}</p>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 gap-2">
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              onClick={() => startEditRule(rule)}
+                            >
+                              ویرایش
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              isLoading={deletingRuleId === rule.id}
+                              onClick={() => handleDeleteRule(rule.id)}
+                            >
+                              حذف
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     )}
                   </li>
                 ))}
