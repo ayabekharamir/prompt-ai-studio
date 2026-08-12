@@ -25,7 +25,7 @@ import {
 } from "@/services/brand-asset.service";
 import type { Brand, BrandAsset, AssetCategory, BrandIdentity, BrandRule } from "@/types";
 
-const ASSET_CATEGORY_KEYS: BrandAssetCategory[] = [
+const ASSET_CATEGORY_KEYS: AssetCategory[] = [
   "logo",
   "logo_variant",
   "brand_photo",
@@ -123,7 +123,7 @@ function BrandBrainContent() {
   const [assetError, setAssetError] = useState<string | null>(null);
   const [assetMessage, setAssetMessage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<BrandAssetCategory>("other");
+  const [selectedCategory, setSelectedCategory] = useState<AssetCategory>("other");
   const [isUploading, setIsUploading] = useState(false);
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
 
@@ -523,7 +523,7 @@ function BrandBrainContent() {
                   id="asset_category"
                   value={selectedCategory}
                   onChange={(e) =>
-                    setSelectedCategory(e.target.value as BrandAssetCategory)
+                    setSelectedCategory(e.target.value as AssetCategory)
                   }
                 >
                   {ASSET_CATEGORY_KEYS.map((key) => (
