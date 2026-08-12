@@ -53,6 +53,28 @@ export interface BrandRule {
   description?: string | null;
 }
 
+export type AssetCategory =
+  | "logo"
+  | "logo_variant"
+  | "brand_photo"
+  | "product"
+  | "character"
+  | "reference"
+  | "other";
+
+export interface BrandAsset {
+  id: string;
+  brand_id: string;
+  file_path: string;
+  file_url: string;
+  file_type: string;
+  category: AssetCategory;
+  file_size?: number | null;
+  width?: number | null;
+  height?: number | null;
+  created_at: string;
+}
+
 export interface PromptTemplate {
   id: string;
   workspace_id?: string | null;
