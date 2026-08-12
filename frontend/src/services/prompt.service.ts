@@ -33,6 +33,24 @@ export async function listPrompts(workspaceId: string): Promise<Prompt[]> {
   return res.data;
 }
 
+export async function updatePrompt(
+  promptId: string,
+  data: {
+    title?: string;
+    content?: string;
+    brand_id?: string;
+    template_id?: string;
+    status?: string;
+  }
+): Promise<Prompt> {
+  const res = await api.put<Prompt>(`/prompts/${promptId}`, data);
+  return res.data;
+}
+
+export async function deletePrompt(promptId: string): Promise<void> {
+  await api.delete(`/prompts/${promptId}`);
+}
+
 export async function executePrompt(
   promptId: string,
   data?: {
@@ -43,9 +61,7 @@ export async function executePrompt(
   return res.data;
 }
 
-export async function listPromptExecutions(
-  promptId: string
-): Promise<any[]> {
+export async function listPromptExecutions(promptId: string): Promise<any[]> {
   const res = await api.get(`/prompts/${promptId}/executions`);
   return res.data;
 }
