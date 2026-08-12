@@ -50,3 +50,15 @@ export async function createBrandRule(
   const res = await api.post<BrandRule>(`/brand-brain/${brandId}/rules`, data);
   return res.data;
 }
+
+export async function updateBrandRule(
+  ruleId: string,
+  data: { rule_type?: string; title?: string; description?: string }
+): Promise<BrandRule> {
+  const res = await api.put<BrandRule>(`/brand-brain/rules/${ruleId}`, data);
+  return res.data;
+}
+
+export async function deleteBrandRule(ruleId: string): Promise<void> {
+  await api.delete(`/brand-brain/rules/${ruleId}`);
+}
