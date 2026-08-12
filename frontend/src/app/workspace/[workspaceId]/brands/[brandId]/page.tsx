@@ -36,8 +36,7 @@ const ASSET_CATEGORY_KEYS: AssetCategory[] = [
 ];
 
 function getAssetDisplayName(asset: BrandAsset): string {
-  const parts = asset.file_path.split("/");
-  return parts[parts.length - 1] || asset.file_path;
+  return asset.original_filename || asset.filename;
 }
 
 const IDENTITY_FIELD_KEYS: (keyof BrandIdentity)[] = [
