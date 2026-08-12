@@ -23,6 +23,7 @@ from app.api.v1 import (
     workspaces,
     brands,
     brand_brain,
+    brand_assets,
     prompt_templates,
     prompts,
 )
@@ -106,6 +107,12 @@ app.include_router(
     brand_brain.router,
     prefix=f"{API_PREFIX}/brand-brain",
     tags=["Brand Brain"],
+)
+
+app.include_router(
+    brand_assets.router,
+    prefix=API_PREFIX,
+    tags=["Brand Assets"],
 )
 
 app.include_router(
