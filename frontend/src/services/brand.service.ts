@@ -19,12 +19,23 @@ export async function getBrand(brandId: string): Promise<Brand> {
   return res.data;
 }
 
+export async function updateBrand(
+  brandId: string,
+  data: { name?: string; industry?: string; website?: string; description?: string }
+): Promise<Brand> {
+  const res = await api.put<Brand>(`/brands/${brandId}`, data);
+  return res.data;
+}
+
+export async function deleteBrand(brandId: string): Promise<void> {
+  await api.delete(`/brands/${brandId}`);
+}
+
 export async function getBrandIdentity(brandId: string): Promise<BrandIdentity | null> {
   try {
     const res = await api.get<BrandIdentity>(`/brand-brain/${brandId}/identity`);
     return res.data;
   } catch (err: any) {
-    // No identity saved yet for this brand — treat as empty, not an error.
     if (err?.response?.status === 404) return null;
     throw err;
   }
