@@ -118,6 +118,13 @@ export const dictionaries = {
       prompts: "پرامپت‌ها",
     },
 
+    workspaceOverview: {
+      brandsCount: "برندها",
+      promptsCount: "پرامپت‌ها",
+      openPrompts: "باز کردن پرامپت‌ها",
+      loadError: "دریافت اطلاعات فضای کاری با خطا مواجه شد.",
+    },
+
     brands: {
       title: "برندها",
       subtitle:
@@ -321,6 +328,12 @@ export const dictionaries = {
     workspaceNav: {
       brands: "Brands",
       prompts: "Prompts",
+    },
+    workspaceOverview: {
+      brandsCount: "Brands",
+      promptsCount: "Prompts",
+      openPrompts: "Open Prompts",
+      loadError: "Failed to load workspace details.",
     },
     brands: {
       title: "Brands",
