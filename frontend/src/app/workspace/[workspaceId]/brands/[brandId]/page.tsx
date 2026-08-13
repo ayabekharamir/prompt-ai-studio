@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Input";
 import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { setNavigationContext } from "@/lib/navigation";
 import {
   createBrandRule,
   deleteBrandRule,
@@ -163,10 +164,11 @@ function BrandBrainContent() {
   }
 
   useEffect(() => {
+    setNavigationContext(workspaceId, brandId);
     loadAll();
     loadAssets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brandId]);
+  }, [workspaceId, brandId]);
 
   // --- Handlers: Identity ---
   async function handleSaveIdentity(e: React.FormEvent) {
