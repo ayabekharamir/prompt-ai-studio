@@ -1,33 +1,27 @@
-"""Pydantic schemas for Personas."""
+"""
+Persona model: a single brand persona (a specific customer profile,
+influencer, team member, etc.), created from one of that brand's
+PersonaTemplates. Mirrors Product exactly - see that module's
+docstring for the `field_values` shape.
+"""
 
-from typing import Any, Dict, Optional
-from uuid import UUID
-from datetime import datetime
-from pydantic import BaseModel
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy.orm import relationship
 
-
-class PersonaBase(BaseModel):
-    name: str
-    field_values: Dict[str, Any] = {}
-
-
-class PersonaCreate(PersonaBase):
-    template_id: UUID
+from app.models.base import BaseModel
 
 
-class PersonaUpdate(BaseModel):
-    """Partial update - only fields provided are changed. template_id is
-    intentionally not editable here - see ProductUpdate for the same
-    reasoning."""
+class Persona(BaseModel):
+    __tablename__ = "personas"
 
-    name: Optional[str] = None
-    field_values: Optional[Dict[str, Any]] = None
+    brand_id = Column(UUID(as_uuid=True), ForeignKey("brands.id"), nullable=False, index=True)
+    template_id = Column(
+        UUID(as_uuid=True), ForeignKey("persona_templates.id"), nullable=False, index=True
+    )
 
+    name = Column(String(200), nullable=False)
+    field_values = Column(JSONB, nullable=False, default=dict)
 
-class PersonaRead(PersonaBase):
-    id: UUID
-    brand_id: UUID
-    template_id: UUID
-    created_at: datetime
-
-    model_config = {"from_attributes": True}
+    brand = relationship("Brand", back_populates="personas")
+    template = relationship("PersonaTemplate", back_populates="personas")
