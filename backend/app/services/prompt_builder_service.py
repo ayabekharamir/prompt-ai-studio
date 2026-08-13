@@ -138,7 +138,7 @@ def build_prompt(
     # ------------------------------------------------------------------
 
     identity = (
-        db.query(BrandBrainIdentity)
+        db.query(BrandIdentity)
         .filter(
             BrandIdentity.brand_id == brand_id
         )
@@ -146,12 +146,12 @@ def build_prompt(
     )
 
     rules = (
-        db.query(BrandBrainRule)
+        db.query(BrandRule)
         .filter(
-            BrandBrainRule.brand_id == brand_id
+            BrandRule.brand_id == brand_id
         )
         .order_by(
-            BrandBrainRule.created_at.asc()
+            BrandRule.created_at.asc()
         )
         .all()
     )
