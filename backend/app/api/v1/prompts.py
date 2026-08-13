@@ -72,13 +72,11 @@ def create_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     return PromptRepository(db).create(
         workspace_id=workspace_id,
         created_by=current_user.id,
         **payload.model_dump(),
     )
-
 
 
 @router.get(
@@ -90,11 +88,7 @@ def list_prompts(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
-    return PromptRepository(db).list_by_workspace(
-        workspace_id
-    )
-
+    return PromptRepository(db).list_by_workspace(workspace_id)
 
 
 @router.get(
@@ -106,7 +100,6 @@ def get_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     prompt = PromptRepository(db).get(prompt_id)
 
     if not prompt:
@@ -116,7 +109,6 @@ def get_prompt(
         )
 
     return prompt
-
 
 
 @router.put(
@@ -129,7 +121,6 @@ def update_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     prompt = PromptRepository(db).get(prompt_id)
 
     if not prompt:
@@ -138,23 +129,13 @@ def update_prompt(
             detail="Prompt not found",
         )
 
-
-    for field, value in payload.model_dump(
-        exclude_unset=True
-    ).items():
-
-        setattr(
-            prompt,
-            field,
-            value,
-        )
-
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(prompt, field, value)
 
     db.commit()
     db.refresh(prompt)
 
     return prompt
-
 
 
 @router.delete(
@@ -166,9 +147,7 @@ def delete_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     prompt_repo = PromptRepository(db)
-
     prompt = prompt_repo.get(prompt_id)
 
     if not prompt:
@@ -177,21 +156,14 @@ def delete_prompt(
             detail="Prompt not found",
         )
 
-
     execution_repo = PromptExecutionRepository(db)
 
-
     for execution in execution_repo.list_by_prompt(prompt_id):
-
-        execution_repo.delete(
-            execution
-        )
-
+        execution_repo.delete(execution)
 
     prompt_repo.delete(prompt)
 
     return None
-
 
 
 # ------------------------------------------------------------------
@@ -208,70 +180,49 @@ def build_prompt_without_ai(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     try:
-
         content = prompt_builder_service.build_prompt(
             db=db,
-
-            brand_id=str(
-                payload.brand_id
+            brand_id=str(payload.brand_id),
+            task=payload.task,
+            prompt_template_id=(
+                str(payload.prompt_template_id)
+                if payload.prompt_template_id
+                else None
             ),
-
-            prompt_template_id=str(
-                payload.prompt_template_id
-            ),
-
             product_id=(
                 str(payload.product_id)
                 if payload.product_id
                 else None
             ),
-
             persona_id=(
                 str(payload.persona_id)
                 if payload.persona_id
                 else None
             ),
-
-            variables=payload.extra_context,
+            extra_context=payload.extra_context,
         )
 
-
         return BuildPromptResponse(
-
-            title=(
-                payload.title
-                or "Generated Prompt"
-            ),
-
+            title=payload.title or "Generated Prompt",
             content=content,
-
             brand_id=payload.brand_id,
-
             product_id=payload.product_id,
-
             persona_id=payload.persona_id,
-
             prompt_template_id=payload.prompt_template_id,
         )
 
-
     except PromptBuilderNotFoundError as exc:
-
         raise HTTPException(
             status_code=404,
             detail=str(exc),
         )
 
-
     except PromptBuilderValidationError as exc:
-
         raise HTTPException(
             status_code=400,
             detail=str(exc),
         )
-
 
 
 # ------------------------------------------------------------------
@@ -290,9 +241,7 @@ def execute_prompt(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     try:
-
         return prompt_execution_service.execute_prompt(
             db=db,
             prompt_id=prompt_id,
@@ -300,22 +249,17 @@ def execute_prompt(
             payload=payload,
         )
 
-
     except PromptNotFoundError:
-
         raise HTTPException(
             status_code=404,
             detail="Prompt not found",
         )
 
-
     except AIExecutionError as exc:
-
         raise HTTPException(
             status_code=502,
             detail=str(exc),
         )
-
 
 
 @router.get(
@@ -327,17 +271,12 @@ def list_prompt_executions(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     prompt = PromptRepository(db).get(prompt_id)
 
     if not prompt:
-
         raise HTTPException(
             status_code=404,
             detail="Prompt not found",
         )
 
-
-    return PromptExecutionRepository(db).list_by_prompt(
-        prompt_id
-    )
+    return PromptExecutionRepository(db).list_by_prompt(prompt_id)
