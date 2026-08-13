@@ -10,3 +10,20 @@ export async function listWorkspaces(): Promise<Workspace[]> {
   const res = await api.get<Workspace[]>("/workspaces/");
   return res.data;
 }
+
+export async function getWorkspace(workspaceId: string): Promise<Workspace> {
+  const res = await api.get<Workspace>(`/workspaces/${workspaceId}`);
+  return res.data;
+}
+
+export async function updateWorkspace(
+  workspaceId: string,
+  data: { name?: string }
+): Promise<Workspace> {
+  const res = await api.put<Workspace>(`/workspaces/${workspaceId}`, data);
+  return res.data;
+}
+
+export async function deleteWorkspace(workspaceId: string): Promise<void> {
+  await api.delete(`/workspaces/${workspaceId}`);
+}

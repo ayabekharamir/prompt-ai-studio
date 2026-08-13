@@ -44,6 +44,7 @@ from app.models import (  # noqa: E402, F401
     brand,
     brand_identity,
     brand_rules,
+    brand_asset,
     prompt_template,
     prompt,
     prompt_execution,

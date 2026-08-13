@@ -17,6 +17,15 @@ class BrandCreate(BrandBase):
     pass
 
 
+class BrandUpdate(BaseModel):
+    """Partial update - only fields provided are changed."""
+
+    name: Optional[str] = None
+    industry: Optional[str] = None
+    website: Optional[str] = None
+    description: Optional[str] = None
+
+
 class BrandRead(BrandBase):
     id: UUID
     workspace_id: UUID

@@ -41,6 +41,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - pas_brand_assets:/data/brand-assets
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
@@ -66,3 +67,5 @@ services:
 volumes:
   pas_pgdata:
     name: pas_pgdata
+  pas_brand_assets:
+    name: pas_brand_assets

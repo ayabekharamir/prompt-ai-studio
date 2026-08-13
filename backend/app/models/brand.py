@@ -23,3 +23,12 @@ class Brand(BaseModel):
     workspace = relationship("Workspace", back_populates="brands")
     identity = relationship("BrandIdentity", back_populates="brand", uselist=False)
     rules = relationship("BrandRule", back_populates="brand")
+    assets = relationship("BrandAsset", back_populates="brand", cascade="all, delete-orphan")
+    product_templates = relationship(
+        "ProductTemplate", back_populates="brand", cascade="all, delete-orphan"
+    )
+    products = relationship("Product", back_populates="brand", cascade="all, delete-orphan")
+    persona_templates = relationship(
+        "PersonaTemplate", back_populates="brand", cascade="all, delete-orphan"
+    )
+    personas = relationship("Persona", back_populates="brand", cascade="all, delete-orphan")

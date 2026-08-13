@@ -2,12 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ */
+/* IRANYekan webfont                                                   */
+/*                                                                      */
+/* Font files are NOT bundled in this repo for licensing reasons.       */
+/* Download the official "IRANYekanWebFaNum" webfont kit from            */
+/* https://fontiran.com (IRANYekan) and place the files here:            */
+/*   frontend/public/fonts/iranyekan/                                    */
+/*     - IRANYekanWebFaNum-Regular.woff2 / .woff                         */
+/*     - IRANYekanWebFaNum-Medium.woff2  / .woff                         */
+/*     - IRANYekanWebFaNum-Bold.woff2    / .woff                         */
+/* See public/fonts/iranyekan/README.md for exact filenames.             */
+/*                                                                      */
+/* Until those files are added, Persian text automatically falls back    */
+/* to Vazirmatn (self-hosted via next/font, no setup needed) so the      */
+/* site still looks good out of the box.                                 */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: "IRANYekan";
+  src: url("/fonts/iranyekan/IRANYekanWebFaNum-Regular.woff2") format("woff2"),
+    url("/fonts/iranyekan/IRANYekanWebFaNum-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IRANYekan";
+  src: url("/fonts/iranyekan/IRANYekanWebFaNum-Medium.woff2") format("woff2"),
+    url("/fonts/iranyekan/IRANYekanWebFaNum-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IRANYekan";
+  src: url("/fonts/iranyekan/IRANYekanWebFaNum-Bold.woff2") format("woff2"),
+    url("/fonts/iranyekan/IRANYekanWebFaNum-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
+  /* Brand */
   --brand-primary: #4f46e5;
   --brand-dark: #3730a3;
+
+  /* Light theme (default) */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9fafb;
+  --color-surface-muted: #f3f4f6;
+  --color-fg: #111827;
+  --color-fg-muted: #4b5563;
+  --color-fg-subtle: #9ca3af;
+  --color-border: #e5e7eb;
+}
+
+.dark {
+  --color-bg: #0b0d12;
+  --color-surface: #14161c;
+  --color-surface-hover: #1b1e26;
+  --color-surface-muted: #1b1e26;
+  --color-fg: #f3f4f6;
+  --color-fg-muted: #b3b8c2;
+  --color-fg-subtle: #6b7280;
+  --color-border: #262a34;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
-  background-color: #fafafa;
-  color: #111827;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Persian text uses IRANYekan (with Vazirmatn as an automatic, no-setup
+   fallback) — English uses the Latin font stack. */
+html[lang="fa"] body {
+  font-family: "IRANYekan", var(--font-fa), Tahoma, system-ui, sans-serif;
+}
+
+html[lang="en"] body {
+  font-family: var(--font-en), system-ui, sans-serif;
+}
+
+/* Numbers usually read better left-to-right even inside RTL paragraphs. */
+html[dir="rtl"] .ltr-nums {
+  direction: ltr;
+  unicode-bidi: embed;
 }

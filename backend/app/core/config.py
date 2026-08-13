@@ -65,6 +65,28 @@ class Settings(BaseSettings):
     GOOGLE_AI_API_KEY: str = ""
     GOOGLE_AI_MODEL: str = "gemini-1.5-flash"
 
+    # Brand Assets / Object Storage (Phase: Brand Assets Foundation)
+    # STORAGE_PROVIDER selects the storage backend behind the
+    # StorageProvider abstraction (see app/services/storage/). "local"
+    # writes to a filesystem path so this works on any Linux host
+    # (including non-cloud hosts like Miznbanfa) with zero external
+    # dependencies. A future "s3" provider (S3-compatible, e.g. R2, Arvan,
+    # Liara, etc.) can be added later without changing brand_assets or the
+    # API - only STORAGE_PROVIDER + its own settings would change.
+    STORAGE_PROVIDER: str = "local"
+
+    # Absolute path on the host/container filesystem where uploaded brand
+    # assets are persisted. Must point at a persistent, writable directory
+    # (e.g. a mounted volume/disk) in production - otherwise files are
+    # lost on redeploy/restart. Defaults to a generic absolute path so any
+    # plain Linux/Docker host (Miznbanfa or otherwise) just needs to mount
+    # a persistent volume/disk at this path; override via the
+    # STORAGE_LOCAL_PATH env var if a different path is required.
+    STORAGE_LOCAL_PATH: str = "/data/brand-assets"
+
+    # Upload constraints
+    MAX_UPLOAD_SIZE_MB: int = 8
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 

@@ -53,6 +53,76 @@ export interface BrandRule {
   description?: string | null;
 }
 
+export type AssetCategory =
+  | "logo"
+  | "logo_variant"
+  | "brand_photo"
+  | "product"
+  | "character"
+  | "reference"
+  | "other";
+
+export interface BrandAsset {
+  id: string;
+  brand_id: string;
+  filename: string;
+  original_filename?: string | null;
+  mime_type: string;
+  size_bytes: number;
+  category: AssetCategory;
+  description?: string | null;
+  created_at: string;
+  // Relative API path (with auth) the frontend fetches to get the file
+  // bytes, e.g. "/assets/{id}/file" - see BrandAssetRead in the backend.
+  url: string;
+}
+
+export type TemplateFieldType = "text" | "textarea" | "number" | "image" | "select";
+
+export interface TemplateFieldDefinition {
+  key: string;
+  label: string;
+  type: TemplateFieldType;
+  required?: boolean;
+  options?: string[] | null; // only meaningful when type === "select"
+}
+
+export interface ProductTemplate {
+  id: string;
+  brand_id: string;
+  name: string;
+  description?: string | null;
+  fields: TemplateFieldDefinition[];
+  created_at: string;
+}
+
+export interface Product {
+  id: string;
+  brand_id: string;
+  template_id: string;
+  name: string;
+  field_values: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface PersonaTemplate {
+  id: string;
+  brand_id: string;
+  name: string;
+  description?: string | null;
+  fields: TemplateFieldDefinition[];
+  created_at: string;
+}
+
+export interface Persona {
+  id: string;
+  brand_id: string;
+  template_id: string;
+  name: string;
+  field_values: Record<string, unknown>;
+  created_at: string;
+}
+
 export interface PromptTemplate {
   id: string;
   workspace_id?: string | null;
