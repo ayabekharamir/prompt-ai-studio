@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import { api } from "./api";
 
 import type {
   BuildPromptRequest,
@@ -6,27 +6,22 @@ import type {
   Prompt,
 } from "@/types/prompts";
 
-
 /**
  * Build prompt without AI
- *
  * POST /api/v1/prompts/build
  */
 export async function buildPrompt(
   payload: BuildPromptRequest
 ): Promise<BuildPromptResponse> {
   const response = await api.post<BuildPromptResponse>(
-    "/api/v1/prompts/build",
+    "/prompts/build",
     payload
   );
-
   return response.data;
 }
 
-
 /**
  * Create Prompt
- *
  * POST /api/v1/prompts/workspaces/{workspace_id}/prompts
  */
 export async function createPrompt(
@@ -41,81 +36,54 @@ export async function createPrompt(
   }
 ): Promise<Prompt> {
   const response = await api.post<Prompt>(
-    `/api/v1/prompts/workspaces/${workspaceId}/prompts`,
+    `/prompts/workspaces/${workspaceId}/prompts`,
     payload
   );
-
   return response.data;
 }
-
 
 /**
  * List Prompts
- *
  * GET /api/v1/prompts/workspaces/{workspace_id}/prompts
  */
-export async function listPrompts(
-  workspaceId: string
-): Promise<Prompt[]> {
+export async function listPrompts(workspaceId: string): Promise<Prompt[]> {
   const response = await api.get<Prompt[]>(
-    `/api/v1/prompts/workspaces/${workspaceId}/prompts`
+    `/prompts/workspaces/${workspaceId}/prompts`
   );
-
   return response.data;
 }
-
 
 /**
  * Get Prompt
- *
  * GET /api/v1/prompts/{prompt_id}
  */
-export async function getPrompt(
-  promptId: string
-): Promise<Prompt> {
-  const response = await api.get<Prompt>(
-    `/api/v1/prompts/${promptId}`
-  );
-
+export async function getPrompt(promptId: string): Promise<Prompt> {
+  const response = await api.get<Prompt>(`/prompts/${promptId}`);
   return response.data;
 }
 
-
 /**
  * Update Prompt
- *
  * PUT /api/v1/prompts/{prompt_id}
  */
 export async function updatePrompt(
   promptId: string,
   payload: Partial<Prompt>
 ): Promise<Prompt> {
-  const response = await api.put<Prompt>(
-    `/api/v1/prompts/${promptId}`,
-    payload
-  );
-
+  const response = await api.put<Prompt>(`/prompts/${promptId}`, payload);
   return response.data;
 }
 
-
 /**
  * Delete Prompt
- *
  * DELETE /api/v1/prompts/{prompt_id}
  */
-export async function deletePrompt(
-  promptId: string
-): Promise<void> {
-  await api.delete(
-    `/api/v1/prompts/${promptId}`
-  );
+export async function deletePrompt(promptId: string): Promise<void> {
+  await api.delete(`/prompts/${promptId}`);
 }
-
 
 /**
  * Execute Prompt
- *
  * POST /api/v1/prompts/{prompt_id}/execute
  */
 export async function executePrompt(
@@ -123,9 +91,8 @@ export async function executePrompt(
   payload?: Record<string, unknown>
 ): Promise<unknown> {
   const response = await api.post(
-    `/api/v1/prompts/${promptId}/execute`,
+    `/prompts/${promptId}/execute`,
     payload ?? {}
   );
-
   return response.data;
 }
