@@ -16,7 +16,19 @@ export function getLastWorkspaceId(): string | null {
 
 export function setLastWorkspaceId(workspaceId: string): void {
   if (typeof window === "undefined") return;
+
+  const previousWorkspaceId = window.localStorage.getItem(
+    LAST_WORKSPACE_STORAGE_KEY
+  );
+
   window.localStorage.setItem(LAST_WORKSPACE_STORAGE_KEY, workspaceId);
+
+  // A brand belongs to a specific workspace. Never keep a brand context
+  // from another workspace, otherwise Products/Personas could point to an
+  // invalid or unrelated brand route after switching workspaces.
+  if (previousWorkspaceId && previousWorkspaceId !== workspaceId) {
+    window.localStorage.removeItem(LAST_BRAND_STORAGE_KEY);
+  }
 }
 
 export function getLastBrandId(): string | null {
@@ -27,6 +39,32 @@ export function getLastBrandId(): string | null {
 export function setLastBrandId(brandId: string): void {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(LAST_BRAND_STORAGE_KEY, brandId);
+}
+
+/**
+ * Synchronize the last workspace/brand context from the current route.
+ * This lets the global Navbar/sidebar safely link to brand-scoped pages
+ * such as Products and Personas without inventing global routes.
+ */
+export function syncNavigationContext(pathname: string): void {
+  if (typeof window === "undefined") return;
+
+  const match = pathname.match(
+    /^\/workspace\/([^/]+)(?:\/brands\/([^/]+))?/
+  );
+
+  if (!match) return;
+
+  const workspaceId = match[1];
+  const brandId = match[2];
+
+  if (workspaceId) {
+    setLastWorkspaceId(workspaceId);
+  }
+
+  if (brandId) {
+    setLastBrandId(brandId);
+  }
 }
 
 export interface NavItem {
