@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, Alert, EmptyState, Spinner } from "@/components/ui/Card";
 
 import { useLanguage } from "@/lib/i18n/language-context";
+import { getLastBrandId, setLastBrandId, setLastWorkspaceId } from "@/lib/navigation";
 import {
   listWorkspaces,
   createWorkspace,
@@ -54,6 +55,22 @@ function DashboardContent() {
       );
       setBrandsCount(counts.reduce((sum, [brands]) => sum + brands.length, 0));
       setPromptsCount(counts.reduce((sum, [, prompts]) => sum + prompts.length, 0));
+
+      // Products and Personas are brand-scoped. If the user has not selected
+      // a brand yet, keep the first available brand as the navigation context
+      // so the dashboard links can open the correct brand-scoped pages.
+      if (!getLastBrandId()) {
+        const firstWorkspaceWithBrand = counts.find(([, brands]) => brands.length > 0);
+        if (firstWorkspaceWithBrand) {
+          const workspaceIndex = counts.indexOf(firstWorkspaceWithBrand);
+          const workspace = data[workspaceIndex];
+          const firstBrand = firstWorkspaceWithBrand[0][0];
+          if (workspace && firstBrand) {
+            setLastWorkspaceId(workspace.id);
+            setLastBrandId(firstBrand.id);
+          }
+        }
+      }
     } catch {
       setError(isRTL ? "خطا در دریافت فضاهای کاری" : "Failed to load workspaces");
     } finally {
