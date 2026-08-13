@@ -35,6 +35,8 @@ export default function PromptPreview({
 
 
   async function copyToClipboard() {
+    if (!result) return;
+
     await navigator.clipboard.writeText(
       result.content
     );

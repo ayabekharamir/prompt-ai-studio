@@ -15,9 +15,9 @@ import type {
 
 
 interface PromptBuilderPageProps {
-  params: {
+  params: Promise<{
     workspaceId: string;
-  };
+  }>;
 }
 
 
@@ -53,13 +53,15 @@ export default async function PromptBuilderPage({
   params,
 }: PromptBuilderPageProps) {
 
+  const { workspaceId } = await params;
+
   const {
     brands,
     products,
     personas,
     promptTemplates,
   } = await getBuilderData(
-    params.workspaceId
+    workspaceId
   );
 
 
