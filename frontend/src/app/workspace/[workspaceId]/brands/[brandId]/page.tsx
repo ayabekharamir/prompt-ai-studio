@@ -94,7 +94,7 @@ function AssetThumbnail({ asset }: { asset: BrandAsset }) {
 }
 
 function BrandBrainContent() {
-  const { brandId } = useParams<{ workspaceId: string; brandId: string }>();
+  const { workspaceId, brandId } = useParams<{ workspaceId: string; brandId: string }>();
   const { t } = useLanguage();
 
   // --- Brand & Identity ---
@@ -322,6 +322,21 @@ function BrandBrainContent() {
       <main className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="text-2xl font-bold text-fg">{brand?.name}</h1>
         <p className="mt-1 text-sm text-fg-muted">{t("brandBrain.subtitle")}</p>
+
+        <div className="mt-4 flex gap-2">
+          <a
+            href={`/workspace/${workspaceId}/brands/${brandId}/products`}
+            className="rounded-lg border border-border px-3 py-1.5 text-sm text-fg-muted hover:bg-surface-hover"
+          >
+            {t("products.title")}
+          </a>
+          <a
+            href={`/workspace/${workspaceId}/brands/${brandId}/personas`}
+            className="rounded-lg border border-border px-3 py-1.5 text-sm text-fg-muted hover:bg-surface-hover"
+          >
+            {t("personas.title")}
+          </a>
+        </div>
 
         {error && (
           <div className="mt-4">
