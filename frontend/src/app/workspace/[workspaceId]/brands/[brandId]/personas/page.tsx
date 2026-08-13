@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Input";
 import { Alert, Card, EmptyState, Spinner } from "@/components/ui/Card";
 import { useLanguage } from "@/lib/i18n/language-context";
+import { setNavigationContext } from "@/lib/navigation";
 import {
   createPersona,
   createPersonaTemplate,
@@ -25,7 +26,7 @@ function emptyField(): TemplateFieldDefinition {
 }
 
 export default function PersonasPage() {
-  const { brandId } = useParams<{ brandId: string }>();
+  const { workspaceId, brandId } = useParams<{ workspaceId: string; brandId: string }>();
   const { t } = useLanguage();
 
   const [templates, setTemplates] = useState<PersonaTemplate[]>([]);
@@ -50,7 +51,8 @@ export default function PersonasPage() {
   const selectedTemplate = templates.find((tpl) => tpl.id === selectedTemplateId) ?? null;
 
   useEffect(() => {
-    if (!brandId) return;
+    if (!workspaceId || !brandId) return;
+    setNavigationContext(workspaceId, brandId);
     setLoadingTemplates(true);
     listPersonaTemplates(brandId)
       .then((data) => {
@@ -59,7 +61,7 @@ export default function PersonasPage() {
       })
       .catch(() => setError(t("personas.loadTemplatesError")))
       .finally(() => setLoadingTemplates(false));
-  }, [brandId, t]);
+  }, [workspaceId, brandId, t]);
 
   useEffect(() => {
     if (!brandId || !selectedTemplateId) {
