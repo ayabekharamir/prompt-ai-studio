@@ -152,3 +152,86 @@ def list_prompt_executions(
     if not prompt:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Prompt not found")
     return PromptExecutionRepository(db).list_by_prompt(prompt_id)
+# --- Deterministic Prompt Builder (No AI) -----------------------------
+
+@router.post(
+    "/build",
+    response_model=BuildPromptResponse,
+    status_code=status.HTTP_200_OK,
+)
+def build_prompt_without_ai(
+    payload: BuildPromptRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Build a final prompt without calling any AI provider.
+
+    Combines:
+    - Brand
+    - Brand Brain
+    - Brand Rules
+    - Product Template + Product
+    - Persona Template + Persona
+    - Prompt Template
+    - Task
+    - Extra Context
+
+    Result can later be:
+    - copied
+    - edited
+    - saved
+    - executed by AI
+    """
+
+    try:
+
+        content = prompt_builder_service.build_prompt(
+            db=db,
+            brand_id=str(payload.brand_id),
+            task=payload.task,
+            prompt_template_id=(
+                str(payload.prompt_template_id)
+                if payload.prompt_template_id
+                else None
+            ),
+            product_id=(
+                str(payload.product_id)
+                if payload.product_id
+                else None
+            ),
+            persona_id=(
+                str(payload.persona_id)
+                if payload.persona_id
+                else None
+            ),
+            extra_context=payload.extra_context,
+        )
+
+        return BuildPromptResponse(
+            title=(
+                payload.title
+                or "Generated Prompt"
+            ),
+            content=content,
+            brand_id=payload.brand_id,
+            product_id=payload.product_id,
+            persona_id=payload.persona_id,
+            prompt_template_id=payload.prompt_template_id,
+        )
+
+
+    except PromptBuilderNotFoundError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        )
+
+
+    except PromptBuilderValidationError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
