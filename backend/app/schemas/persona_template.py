@@ -1,42 +1,75 @@
-"""Pydantic schemas for Product Templates."""
+"""
+Pydantic schemas for Persona Templates.
+"""
 
+from datetime import datetime
 from typing import List, Literal, Optional
 from uuid import UUID
-from datetime import datetime
+
 from pydantic import BaseModel, Field
+
 
 FieldType = Literal["text", "textarea", "number", "image", "select"]
 
 
 class FieldDefinition(BaseModel):
-    """One field in a ProductTemplate/PersonaTemplate's `fields` schema."""
+    """
+    Definition of one field in a PersonaTemplate.
 
-    key: str = Field(..., description="Stable machine key, e.g. 'price'. Used as the lookup key in field_values.")
-    label: str = Field(..., description="Human-readable label shown in the UI, e.g. 'Price'.")
+    The same generic field structure can be used by both
+    ProductTemplate and PersonaTemplate, while the template
+    schemas themselves remain separate.
+    """
+
+    key: str = Field(
+        ...,
+        description=(
+            "Stable machine key used to identify the field "
+            "inside field_values."
+        ),
+    )
+    label: str = Field(
+        ...,
+        description="Human-readable field label shown in the UI.",
+    )
     type: FieldType = "text"
     required: bool = False
-    options: Optional[List[str]] = None  # only meaningful when type == "select"
+    options: Optional[List[str]] = None
 
 
-class ProductTemplateBase(BaseModel):
+class PersonaTemplateBase(BaseModel):
+    """
+    Shared fields for creating and reading a PersonaTemplate.
+    """
+
     name: str
     description: Optional[str] = None
-    fields: List[FieldDefinition] = []
+    fields: List[FieldDefinition] = Field(default_factory=list)
 
 
-class ProductTemplateCreate(ProductTemplateBase):
+class PersonaTemplateCreate(PersonaTemplateBase):
+    """
+    Payload for creating a PersonaTemplate.
+    """
+
     pass
 
 
-class ProductTemplateUpdate(BaseModel):
-    """Partial update - only fields provided are changed."""
+class PersonaTemplateUpdate(BaseModel):
+    """
+    Partial update payload for a PersonaTemplate.
+    """
 
     name: Optional[str] = None
     description: Optional[str] = None
     fields: Optional[List[FieldDefinition]] = None
 
 
-class ProductTemplateRead(ProductTemplateBase):
+class PersonaTemplateRead(PersonaTemplateBase):
+    """
+    PersonaTemplate response schema.
+    """
+
     id: UUID
     brand_id: UUID
     created_at: datetime
