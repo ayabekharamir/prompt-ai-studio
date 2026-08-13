@@ -34,6 +34,11 @@ export const dictionaries = {
     nav: {
       logout: "خروج",
       dashboard: "داشبورد",
+      workspaces: "فضاهای کاری",
+      brands: "برندها",
+      prompts: "پرامپت‌ها",
+      products: "محصولات",
+      personas: "شخصیت‌ها",
       profile: "پروفایل",
     },
 
@@ -360,6 +365,11 @@ export const dictionaries = {
     nav: {
       logout: "Log out",
       dashboard: "Dashboard",
+      workspaces: "Workspaces",
+      brands: "Brands",
+      prompts: "Prompts",
+      products: "Products",
+      personas: "Personas",
       profile: "Profile",
     },
 
