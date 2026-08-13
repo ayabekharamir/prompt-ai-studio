@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   getLastBrandId,
   getLastWorkspaceId,
+  syncNavigationContext,
 } from "@/lib/navigation";
 
 export function Navbar() {
@@ -23,6 +24,7 @@ export function Navbar() {
   const [brandId, setBrandId] = useState<string | null>(null);
 
   useEffect(() => {
+    syncNavigationContext(pathname);
     setWorkspaceId(getLastWorkspaceId());
     setBrandId(getLastBrandId());
   }, [pathname]);

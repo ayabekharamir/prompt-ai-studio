@@ -3,22 +3,33 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n/language-context";
-import { getDashboardNavItems, getLastWorkspaceId } from "@/lib/navigation";
+import { usePathname } from "next/navigation";
+import {
+  getDashboardNavItems,
+  getLastBrandId,
+  getLastWorkspaceId,
+  syncNavigationContext,
+} from "@/lib/navigation";
 import { classNames } from "@/utils";
 
 export function DashboardSidebar() {
   const { lang } = useLanguage();
 
   const isRTL = lang === "fa";
+  const pathname = usePathname();
 
   // localStorage is only available client-side; read it after mount so
   // server-rendered and first-client-render markup match.
   const [lastWorkspaceId, setLastWorkspaceIdState] = useState<string | null>(null);
-  useEffect(() => {
-    setLastWorkspaceIdState(getLastWorkspaceId());
-  }, []);
+  const [lastBrandId, setLastBrandIdState] = useState<string | null>(null);
 
-  const menuItems = getDashboardNavItems(lastWorkspaceId).map((item) => ({
+  useEffect(() => {
+    syncNavigationContext(pathname);
+    setLastWorkspaceIdState(getLastWorkspaceId());
+    setLastBrandIdState(getLastBrandId());
+  }, [pathname]);
+
+  const menuItems = getDashboardNavItems(lastWorkspaceId, lastBrandId).map((item) => ({
     label: isRTL ? item.label.fa : item.label.en,
     href: item.href,
     icon: item.icon,
