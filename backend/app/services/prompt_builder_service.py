@@ -140,7 +140,7 @@ def build_prompt(
     identity = (
         db.query(BrandBrainIdentity)
         .filter(
-            BrandBrainIdentity.brand_id == brand_id
+            BrandIdentity.brand_id == brand_id
         )
         .first()
     )
