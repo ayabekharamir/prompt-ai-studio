@@ -24,6 +24,11 @@ from app.services import prompt_execution_service
 from app.services.prompt_execution_service import AIExecutionError, PromptNotFoundError
 from app.schemas.prompt import PromptCreate, PromptRead, PromptUpdate
 from app.schemas.prompt_build import BuildPromptRequest, BuildPromptResponse
+from app.services import prompt_builder_service
+from app.services.prompt_builder_service import (
+    PromptBuilderNotFoundError,
+    PromptBuilderValidationError,
+)
 
 router = APIRouter()
 
