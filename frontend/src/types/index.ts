@@ -77,6 +77,52 @@ export interface BrandAsset {
   url: string;
 }
 
+export type TemplateFieldType = "text" | "textarea" | "number" | "image" | "select";
+
+export interface TemplateFieldDefinition {
+  key: string;
+  label: string;
+  type: TemplateFieldType;
+  required?: boolean;
+  options?: string[] | null; // only meaningful when type === "select"
+}
+
+export interface ProductTemplate {
+  id: string;
+  brand_id: string;
+  name: string;
+  description?: string | null;
+  fields: TemplateFieldDefinition[];
+  created_at: string;
+}
+
+export interface Product {
+  id: string;
+  brand_id: string;
+  template_id: string;
+  name: string;
+  field_values: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface PersonaTemplate {
+  id: string;
+  brand_id: string;
+  name: string;
+  description?: string | null;
+  fields: TemplateFieldDefinition[];
+  created_at: string;
+}
+
+export interface Persona {
+  id: string;
+  brand_id: string;
+  template_id: string;
+  name: string;
+  field_values: Record<string, unknown>;
+  created_at: string;
+}
+
 export interface PromptTemplate {
   id: string;
   workspace_id?: string | null;
