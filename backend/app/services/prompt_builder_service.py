@@ -1,3 +1,60 @@
+"""Deterministic Prompt Builder Service (NO AI)."""
+
+from __future__ import annotations
+
+from typing import Any
+from sqlalchemy.orm import Session
+
+from app.models.brand import Brand
+from app.models.brand_identity import BrandIdentity
+from app.models.brand_rules import BrandRule
+from app.models.product import Product
+from app.models.product_template import ProductTemplate
+from app.models.persona import Persona
+from app.models.persona_template import PersonaTemplate
+from app.models.prompt_template import PromptTemplate
+
+class PromptBuilderNotFoundError(Exception):
+    pass
+
+class PromptBuilderValidationError(Exception):
+    pass
+
+def _safe_value(value: Any) -> str:
+    if value is None: return ""
+    if isinstance(value, dict): return "\n".join(f"{k}: {v}" for k,v in value.items() if v not in (None,""))
+    if isinstance(value, (list,tuple)): return "\n".join(str(x) for x in value if x not in (None,""))
+    return str(value).strip()
+
+def _cleanup_prompt(text: str) -> str:
+    return "\n".join(x.rstrip() for x in text.splitlines()).strip()
+
+def _format_brand(obj):
+    return [f"نام برند: {obj.name}"] if getattr(obj,"name",None) else []
+
+def _format_brand_identity(obj):
+    if not obj: return []
+    return [f"{k}: {getattr(obj,k)}" for k in ["mission","vision","tone_of_voice","target_audience"] if getattr(obj,k,None)]
+
+def _format_brand_rules(rules):
+    return [f"{getattr(r,'title','')}: {getattr(r,'description','')}" for r in rules if getattr(r,'title',None) or getattr(r,'description',None)]
+
+def _format_product(product, template=None):
+    return [f"نام محصول: {product.name}"] if product else []
+
+def _format_persona(persona, template=None):
+    return [f"نام پرسونا: {persona.name}"] if persona else []
+
+def _replace_standard_placeholders(text, context):
+    for k,v in context.items():
+        text=text.replace("{{"+k+"}}", v or "")
+        text=text.replace("{{ "+k+" }}", v or "")
+    return text
+
+def _replace_variables(text, variables):
+    if not variables: return text
+    return _replace_standard_placeholders(text,{k:_safe_value(v) for k,v in variables.items()})
+
 def build_prompt(
     db: Session,
     brand_id: str,
