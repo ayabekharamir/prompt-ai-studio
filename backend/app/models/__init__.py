@@ -26,6 +26,10 @@ from app.models import brand  # noqa: F401
 from app.models import brand_identity  # noqa: F401
 from app.models import brand_rules  # noqa: F401
 from app.models import brand_asset  # noqa: F401
+from app.models import product_template  # noqa: F401
+from app.models import product  # noqa: F401
+from app.models import persona_template  # noqa: F401
+from app.models import persona  # noqa: F401
 from app.models import prompt_template  # noqa: F401
 from app.models import prompt  # noqa: F401
 from app.models import prompt_execution  # noqa: F401
