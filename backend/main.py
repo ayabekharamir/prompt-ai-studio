@@ -24,6 +24,8 @@ from app.api.v1 import (
     brands,
     brand_brain,
     brand_assets,
+    products,
+    personas,
     prompt_templates,
     prompts,
 )
@@ -113,6 +115,18 @@ app.include_router(
     brand_assets.router,
     prefix=API_PREFIX,
     tags=["Brand Assets"],
+)
+
+app.include_router(
+    products.router,
+    prefix=API_PREFIX,
+    tags=["Products"],
+)
+
+app.include_router(
+    personas.router,
+    prefix=API_PREFIX,
+    tags=["Personas"],
 )
 
 app.include_router(
