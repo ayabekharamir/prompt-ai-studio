@@ -1,34 +1,44 @@
-"""
-Brand model: a brand profile that belongs to a workspace.
-"""
+"""Pydantic schemas for Product Templates."""
 
-from sqlalchemy import Column, String, Text, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from typing import List, Literal, Optional
+from uuid import UUID
+from datetime import datetime
+from pydantic import BaseModel, Field
 
-from app.models.base import BaseModel
+FieldType = Literal["text", "textarea", "number", "image", "select"]
 
 
-class Brand(BaseModel):
-    __tablename__ = "brands"
+class FieldDefinition(BaseModel):
+    """One field in a ProductTemplate/PersonaTemplate's `fields` schema."""
 
-    workspace_id = Column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=False)
+    key: str = Field(..., description="Stable machine key, e.g. 'price'. Used as the lookup key in field_values.")
+    label: str = Field(..., description="Human-readable label shown in the UI, e.g. 'Price'.")
+    type: FieldType = "text"
+    required: bool = False
+    options: Optional[List[str]] = None  # only meaningful when type == "select"
 
-    name = Column(String(150), nullable=False)
-    industry = Column(String(150), nullable=True)
-    website = Column(String(255), nullable=True)
-    description = Column(Text, nullable=True)
-    logo_url = Column(String(500), nullable=True)
 
-    workspace = relationship("Workspace", back_populates="brands")
-    identity = relationship("BrandIdentity", back_populates="brand", uselist=False)
-    rules = relationship("BrandRule", back_populates="brand")
-    assets = relationship("BrandAsset", back_populates="brand", cascade="all, delete-orphan")
-    product_templates = relationship(
-        "ProductTemplate", back_populates="brand", cascade="all, delete-orphan"
-    )
-    products = relationship("Product", back_populates="brand", cascade="all, delete-orphan")
-    persona_templates = relationship(
-        "PersonaTemplate", back_populates="brand", cascade="all, delete-orphan"
-    )
-    personas = relationship("Persona", back_populates="brand", cascade="all, delete-orphan")
+class ProductTemplateBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    fields: List[FieldDefinition] = []
+
+
+class ProductTemplateCreate(ProductTemplateBase):
+    pass
+
+
+class ProductTemplateUpdate(BaseModel):
+    """Partial update - only fields provided are changed."""
+
+    name: Optional[str] = None
+    description: Optional[str] = None
+    fields: Optional[List[FieldDefinition]] = None
+
+
+class ProductTemplateRead(ProductTemplateBase):
+    id: UUID
+    brand_id: UUID
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
