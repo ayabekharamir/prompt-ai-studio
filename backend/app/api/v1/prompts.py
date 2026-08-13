@@ -22,6 +22,8 @@ from app.repositories.prompt_repository import PromptRepository
 from app.repositories.prompt_execution_repository import PromptExecutionRepository
 from app.services import prompt_execution_service
 from app.services.prompt_execution_service import AIExecutionError, PromptNotFoundError
+from app.schemas.prompt import PromptCreate, PromptRead, PromptUpdate
+from app.schemas.prompt_build import BuildPromptRequest, BuildPromptResponse
 
 router = APIRouter()
 
