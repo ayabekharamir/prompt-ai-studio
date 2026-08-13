@@ -2,26 +2,47 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 import { useLanguage } from "@/lib/i18n/language-context";
 import { classNames } from "@/utils";
+import { setLastWorkspaceId } from "@/lib/navigation";
 
-export function WorkspaceNav({ workspaceId }: { workspaceId: string }) {
+export function WorkspaceNav({
+  workspaceId,
+}: {
+  workspaceId: string;
+}) {
   const pathname = usePathname();
   const { t } = useLanguage();
 
+  /**
+   * Keep the current workspace available for dashboard-level
+   * workspace-scoped navigation.
+   */
+  if (typeof window !== "undefined") {
+    setLastWorkspaceId(workspaceId);
+  }
+
   const tabs = [
-    { href: `/workspace/${workspaceId}`, label: t("workspaceNav.brands") },
-    { href: `/workspace/${workspaceId}/prompts`, label: t("workspaceNav.prompts") },
+    {
+      href: `/workspace/${workspaceId}`,
+      label: t("workspaceNav.brands"),
+    },
+    {
+      href: `/workspace/${workspaceId}/prompts`,
+      label: t("workspaceNav.prompts"),
+    },
   ];
 
   return (
     <div className="border-b border-border bg-surface">
-      <nav className="mx-auto flex max-w-6xl gap-6 px-6">
+      <nav className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-6">
         {tabs.map((tab) => {
           const isActive =
             tab.href === `/workspace/${workspaceId}`
               ? pathname === tab.href
               : pathname.startsWith(tab.href);
+
           return (
             <Link
               key={tab.href}
