@@ -2,140 +2,268 @@
 
 **استودیو پرامپت هوشمند**
 
-**English Tagline:** Build Your Brand's AI Brain
-**Persian Tagline | تگ‌لاین فارسی:** مغز هوشمند ساخت محتوای برندها
+**English Tagline:** Build Your Brand's AI Brain  
+**Persian Tagline:** مغز هوشمند ساخت محتوای برندها
 
----
+## 1. About
 
-## 1. About Prompt AI Studio
+Prompt AI Studio (PAS) is a brand-intelligence and prompt-management SaaS designed to help brands build, organize, and execute brand-aware AI prompts.
 
-Prompt AI Studio is a future AI-powered platform that helps brands build their own intelligent content system.
+The current MVP is no longer a documentation-only project. The first engineering phase is implemented as a working web application with a Next.js frontend, FastAPI backend, PostgreSQL database, deterministic Prompt Builder, and provider-based AI Execution layer.
 
-The **first version is not an AI generator.**
-The first version is a **professional Prompt Management and Brand Intelligence platform.**
+**فارسی:**
 
-**Persian | فارسی:**
-استودیو پرامپت هوشمند پلتفرمی است که در آینده به برندها کمک می‌کند سیستم هوشمند تولید محتوای اختصاصی خود را بسازند. نسخه اول این محصول، تولیدکننده محتوای هوش مصنوعی نیست؛ بلکه یک پلتفرم حرفه‌ای مدیریت پرامپت و هوش برند است.
+استودیو پرامپت هوشمند یک SaaS برای مدیریت هوش برند، ساخت پرامپت‌های ساختاریافته و اجرای آن‌ها با مدل‌های هوش مصنوعی است. هسته MVP اکنون پیاده‌سازی شده و شامل فرانت‌اند Next.js، بک‌اند FastAPI، PostgreSQL، Prompt Builder بدون AI و لایه اجرای AI مبتنی بر Provider Pattern است.
 
 ## 2. Vision
 
-To become the intelligence layer every brand uses to think, write, and create with AI — starting with structured prompt and brand knowledge management, and evolving into a fully autonomous AI Brand Agent.
+To become the intelligence layer every brand uses to think, write, and create with AI — evolving from structured brand knowledge and prompt management into an AI Brand Agent platform.
 
-*See `Product/PRODUCT_VISION.md` for the full vision and mission statements (English + Persian).*
+## 3. Current MVP Status
 
-## 3. Phase 1 Features (Summary)
+**Phase 0 — Foundation:** ✅ Completed  
+**Phase 1 — MVP Web Application:** ✅ Core implementation completed  
+**Current focus:** Product hardening, Prompt Library UX completion, Execution UX refinement, testing, and production readiness.
 
-- **Brand Brain** — a structured profile of a brand's identity, tone of voice, audience, and content rules.
-- **Prompt Library** — an organized, searchable, versioned collection of reusable prompts.
-- **Prompt Generator** — a guided flow that creates structured prompts using Brand Brain data.
-- **Workspaces** — support for managing multiple brands/clients.
+### Implemented in Phase 1
 
-*Full detail in `Product/PRODUCT_FEATURES.md`.*
+- User registration and authentication
+- JWT-based authentication flow
+- Workspaces
+- Brand management
+- Brand Brain / Brand Identity
+- Brand Rules
+- Brand Assets
+- Products and Product Templates
+- Personas and Persona Templates
+- Prompt Templates
+- Prompt CRUD
+- Deterministic Prompt Builder without AI
+- Prompt Builder UI in Next.js
+- Prompt Library UI
+- AI Execution endpoint
+- Prompt Execution persistence and history
+- Provider-based AI architecture for OpenAI, Anthropic, and Gemini
+- Repository and service layers
+- Alembic migrations
+- PostgreSQL-backed automated tests
+- Production deployment configuration for Railway and Cloudflare/OpenNext
 
-## 4. Product Evolution Roadmap
+## 4. Prompt Builder
 
-| Phase | Focus |
-|---|---|
-| **Phase 1** | Brand Brain + Prompt Generator *(current)* |
-| Phase 2 | AI Prompt Optimization |
-| Phase 3 | AI Content Generation |
-| Phase 4 | AI Brand Agent |
-| Phase 5 | Enterprise AI Platform |
+The Prompt Builder creates a final prompt deterministically from application data. It does **not** call an AI provider.
 
-*Full roadmap in `Strategy/ROADMAP.md` and the root-level `ROADMAP.md`.*
-
-## 5. Project Structure
-
+```text
+Brand
++ Brand Brain
++ Brand Rules
++ Product Template + Product
++ Persona Template + Persona
++ Prompt Template
++ Task
++ Extra Context
+        ↓
+Final Prompt
 ```
+
+API:
+
+`POST /api/v1/prompts/build`
+
+The generated result can be previewed, copied, edited, and saved for later AI execution.
+
+## 5. AI Execution
+
+Saved prompts can be sent to the AI Execution layer through:
+
+`POST /api/v1/prompts/{prompt_id}/execute`
+
+Execution history is available through:
+
+`GET /api/v1/prompts/{prompt_id}/executions`
+
+The backend uses a provider abstraction so the core execution service is not tied to a single AI vendor.
+
+Current provider implementations include:
+
+- OpenAI
+- Anthropic
+- Gemini
+
+## 6. Main API Areas
+
+### Authentication
+
+- Register
+- Login
+- Current user
+- JWT access/refresh flow
+
+### Workspaces
+
+- Create workspace
+- List workspaces
+- Get workspace
+
+### Brands / Brand Brain
+
+- Brand CRUD
+- Brand Identity
+- Brand Rules
+- Brand Assets
+
+### Products / Personas
+
+- Product Templates
+- Products
+- Persona Templates
+- Personas
+
+### Prompts
+
+- Create Prompt
+- List Prompts
+- Get Prompt
+- Update Prompt
+- Delete Prompt
+- Build Prompt Without AI
+- Execute Prompt
+- List Prompt Executions
+
+## 7. Frontend
+
+The frontend is built with:
+
+- Next.js
+- TypeScript
+- React
+- Tailwind CSS
+- Axios
+- TanStack React Query
+- Zod
+
+The current frontend contains authentication, dashboard/workspace flows, Brand Brain, products, personas, Prompt Library, Prompt Builder, and AI Execution screens.
+
+## 8. Architecture
+
+```text
+Next.js + TypeScript
+        │
+        │ REST API
+        ▼
+FastAPI
+        │
+        ├── API Layer
+        ├── Service Layer
+        ├── Repository Layer
+        └── AI Provider Layer
+        │
+        ▼
+PostgreSQL
+```
+
+AI execution is intentionally isolated behind a provider abstraction:
+
+```text
+Prompt
+  ↓
+Prompt Execution Service
+  ↓
+Provider Factory
+  ↓
+OpenAI / Anthropic / Gemini
+  ↓
+Normalized Execution Result
+  ↓
+PromptExecution
+```
+
+## 9. Product Evolution Roadmap
+
+| Phase | Focus | Status |
+|---|---|---|
+| Phase 0 | Product, brand, UX, architecture, business foundation | ✅ Complete |
+| Phase 1 | MVP web application, Brand Brain, Prompt Builder, Prompt Library, AI Execution foundation | ✅ Core complete |
+| Phase 2 | AI Prompt Optimization and intelligent suggestions | ⏳ Next |
+| Phase 3 | AI Content Generation | ⏳ Planned |
+| Phase 4 | AI Brand Agent | ⏳ Planned |
+| Phase 5 | Enterprise AI Platform | ⏳ Planned |
+
+## 10. Repository Structure
+
+```text
 prompt-ai-studio/
-├── README.md                  # This file
-├── LICENSE                    # MIT License
-├── CONTRIBUTING.md            # Contribution guidelines
-├── CODE_OF_CONDUCT.md         # Community standards
-├── SECURITY.md                # Security policy
-├── CHANGELOG.md                # Repository-level release history
-├── ROADMAP.md                  # High-level public roadmap
-├── .gitignore
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── repositories/
+│   │   ├── schemas/
+│   │   └── services/
+│   │       ├── ai/
+│   │       ├── sms/
+│   │       └── storage/
+│   └── tests/
+│
+├── frontend/
+│   └── src/
+│       ├── app/
+│       ├── components/
+│       ├── hooks/
+│       ├── lib/
+│       ├── services/
+│       └── types/
 │
 ├── Brand/
-│   ├── BRAND_IDENTITY.md
-│   ├── BRAND_VALUES.md
-│   ├── BRAND_VOICE.md
-│   └── VISUAL_IDENTITY.md
-│
 ├── Product/
-│   ├── PRODUCT_VISION.md
-│   ├── PRODUCT_FEATURES.md
-│   └── PRODUCT_REQUIREMENTS.md
-│
 ├── Strategy/
-│   ├── ROADMAP.md
-│   └── MARKET_STRATEGY.md
-│
 ├── UX/
-│   ├── USER_FLOW.md
-│   └── USER_PERSONA.md
-│
 ├── Business/
-│   ├── BUSINESS_MODEL.md
-│   └── PRICING.md
-│
 ├── AI/
-│   ├── AI_STRATEGY.md
-│   └── AI_ARCHITECTURE.md
-│
-└── Documentation/
-    ├── NAMING.md
-    ├── GLOSSARY.md
-    └── CHANGELOG.md            # Documentation-level changelog
+├── Documentation/
+├── database/
+├── prompts/
+├── templates/
+└── README.md
 ```
 
-## 6. Future Architecture (Reference Only — No Code in Phase 1)
+## 11. Development
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js + TypeScript |
-| Backend | FastAPI (Python) |
-| Database | PostgreSQL |
-| Future | Native mobile application |
-
-Full directional architecture in `AI/AI_ARCHITECTURE.md`.
-
-> **Note:** Phase 1 is intentionally documentation and product-foundation only. No application code is included in this release.
-
-## 7. Installation (Placeholder — Future Phase)
+Backend:
 
 ```bash
-# Placeholder — engineering setup will be added starting with the Phase 1 implementation milestone.
-# git clone https://github.com/[your-org]/prompt-ai-studio.git
-# cd prompt-ai-studio
-# [setup instructions to be added]
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-## 8. Documentation Index
+Frontend:
 
-| Category | Files |
-|---|---|
-| Brand | `Brand/BRAND_IDENTITY.md`, `BRAND_VALUES.md`, `BRAND_VOICE.md`, `VISUAL_IDENTITY.md` |
-| Product | `Product/PRODUCT_VISION.md`, `PRODUCT_FEATURES.md`, `PRODUCT_REQUIREMENTS.md` |
-| Strategy | `Strategy/ROADMAP.md`, `MARKET_STRATEGY.md` |
-| UX | `UX/USER_FLOW.md`, `USER_PERSONA.md` |
-| Business | `Business/BUSINESS_MODEL.md`, `PRICING.md` |
-| AI | `AI/AI_STRATEGY.md`, `AI_ARCHITECTURE.md` |
-| Documentation | `Documentation/NAMING.md`, `GLOSSARY.md`, `CHANGELOG.md` |
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## 9. Contributing
+Production frontend builds use OpenNext for Cloudflare.
 
-See `CONTRIBUTING.md` for guidelines and `CODE_OF_CONDUCT.md` for community standards.
+## 12. Documentation
 
-## 10. Security
+- `Documentation/PROJECT_MASTER_PLAN.md` — current master project state
+- `Documentation/DEVELOPMENT_ROADMAP.md` — implementation roadmap and sprint status
+- `Documentation/FINAL_PROJECT_CHECKLIST.md` — current completion checklist
+- `Documentation/PRODUCT_ARCHITECTURE.md` — product architecture
+- `Documentation/FRONTEND_ARCHITECTURE.md` — frontend architecture
+- `Documentation/API_ARCHITECTURE.md` — API architecture
+- `Documentation/PROMPT_ENGINE_ARCHITECTURE.md` — Prompt Builder architecture
+- `AI/AI_ARCHITECTURE.md` — AI provider and future AI architecture
+- `CHANGELOG.md` — repository change history
 
-See `SECURITY.md` for how to report vulnerabilities.
+## 13. Security
 
-## 11. License
+See `SECURITY.md` for the repository security policy.
 
-This project is licensed under the MIT License — see `LICENSE` for details.
+## 14. License
 
-## 12. Persian Summary | خلاصه فارسی
-
-این مخزن، فاز اول پروژه استودیو پرامپت هوشمند را در بر می‌گیرد: مستندات کامل برند، محصول، استراتژی، تجربه کاربری، مدل کسب‌وکار و استراتژی هوش مصنوعی. نسخه اول شامل هیچ کدی نیست و صرفاً پایه‌ی حرفه‌ای و مستندسازی‌شده‌ای برای توسعه محصول در فازهای بعدی (بهینه‌سازی پرامپت، تولید محتوا، ایجنت هوشمند برند و پلتفرم سازمانی) فراهم می‌کند.
+MIT License.

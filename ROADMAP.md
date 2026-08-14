@@ -1,25 +1,132 @@
-# Roadmap — Prompt AI Studio
+# Prompt AI Studio — Product Roadmap
 
-> This is a high-level, public-facing roadmap. For the detailed strategic breakdown of each phase, see `Strategy/ROADMAP.md`.
+## Current Position
 
-## Current Phase: Phase 1 — Brand Brain + Prompt Generator
+**Phase 1 — MVP Web Application: Core Complete ✅**
 
-Building the foundation: structured brand knowledge (Brand Brain) and a professional prompt management system (Prompt Library + Prompt Generator).
+Phase 0 foundation is complete and the main Phase 1 engineering foundation is implemented.
 
-## Upcoming Phases
+Current work is focused on hardening the MVP, completing remaining UX details, testing, and production readiness before moving deeper into AI intelligence.
 
-| Phase | Focus | Status |
-|---|---|---|
-| **Phase 1** | Brand Brain + Prompt Generator | 🚧 In Progress |
-| Phase 2 | AI Prompt Optimization | 📋 Planned |
-| Phase 3 | AI Content Generation | 📋 Planned |
-| Phase 4 | AI Brand Agent | 📋 Planned |
-| Phase 5 | Enterprise AI Platform | 📋 Planned |
+---
 
-Timelines are intentionally undefined (`[TBD]`) at this stage and will be added during internal planning cycles.
+## Phase 0 — Foundation ✅
 
-For full phase-by-phase details, goals, and rationale, see [`Strategy/ROADMAP.md`](./Strategy/ROADMAP.md).
+Completed:
 
-## Persian Summary | خلاصه فارسی
+- Brand identity and voice
+- Product vision and requirements
+- UX planning
+- Technical architecture
+- Database design
+- API architecture
+- Security planning
+- Business model and pricing direction
+- Development roadmap
 
-این فایل نسخه خلاصه و عمومی نقشه راه استودیو پرامپت هوشمند است. فاز فعلی (Phase 1) بر ساخت مغز برند و سیستم مدیریت پرامپت متمرکز است. جزئیات کامل هر فاز در فایل `Strategy/ROADMAP.md` موجود است. زمان‌بندی دقیق فازها هنوز مشخص نشده و در برنامه‌ریزی داخلی تیم تعیین خواهد شد.
+---
+
+## Phase 1 — MVP Web Application ✅ Core Complete
+
+### Platform
+
+- Next.js + TypeScript frontend
+- FastAPI backend
+- PostgreSQL
+- JWT authentication
+- Alembic migrations
+- Repository Pattern
+- Service Layer
+
+### Brand Intelligence
+
+- Workspaces
+- Brands
+- Brand Identity
+- Brand Rules
+- Brand Assets
+- Products
+- Product Templates
+- Personas
+- Persona Templates
+
+### Prompt System
+
+- Prompt Templates
+- Prompt CRUD
+- Prompt Library UI
+- Deterministic Prompt Builder
+- Prompt Builder UI
+- Prompt preview/copy/save workflow
+
+### AI Execution Foundation
+
+- Prompt execution service
+- Execution persistence
+- Execution history
+- Provider abstraction
+- OpenAI provider
+- Anthropic provider
+- Gemini provider
+- Execution UI foundation
+
+### Remaining Phase 1 Hardening
+
+- End-to-end frontend testing
+- Production smoke tests
+- Prompt Library UX refinements
+- Execution UI refinement
+- Search/filter enhancements where required
+- Documentation synchronization
+- Production error handling and observability hardening
+
+---
+
+## Phase 2 — AI Prompt Optimization ⏳ Next Major Phase
+
+Goal: make PAS intelligently improve prompts without changing the user's brand context.
+
+Planned capabilities:
+
+- Prompt quality analysis
+- AI prompt optimization
+- Brand-aware recommendations
+- Missing-context detection
+- Prompt structure suggestions
+- Model/provider selection support
+- Before/after prompt comparison
+- Optimization history
+
+---
+
+## Phase 3 — AI Content Generation ⏳
+
+- Text generation
+- Social content generation
+- Marketing copy
+- Image prompts
+- Video scripts
+- Campaign generation
+
+---
+
+## Phase 4 — AI Brand Agent ⏳
+
+- Autonomous brand-aware workflows
+- Multi-step AI tasks
+- Content planning
+- Agent memory
+- Approval workflows
+- Scheduled execution
+
+---
+
+## Phase 5 — Enterprise AI Platform ⏳
+
+- Advanced team management
+- Enterprise permissions
+- SSO
+- Advanced analytics
+- Audit logs
+- Enterprise governance
+- Organization-level AI controls
