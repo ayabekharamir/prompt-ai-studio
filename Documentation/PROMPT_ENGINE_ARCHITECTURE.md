@@ -1,264 +1,108 @@
 # Prompt AI Studio
 # Prompt Engine Architecture
 
-
 ## 1. Overview
 
+The Prompt Engine is responsible for building professional, brand-aware prompts from structured application data.
 
-Prompt Engine is the core system responsible for creating professional AI prompts based on brand information.
-
-
-Main concept:
-
-
-Brand Brain
-
-+
-
-Prompt Template
-
-+
-
-User Goal
-
-=
-
-Brand Specific Prompt
-
-
+The current deterministic implementation does **not** call an AI provider.
 
 ---
 
-# 2. Prompt Generation Flow
-
-
-User selects content goal
-
-
-↓
-
-Selects content category
-
-
-↓
-
-Selects prompt template
-
-
-↓
-
-System loads Brand Brain
-
-
-↓
-
-System combines brand context
-
-
-↓
-
-Prompt Engine creates final prompt
-
-
-↓
-
-User saves or exports prompt
-
-
-
----
-
-# 3. Prompt Structure
-
-
-Every prompt contains:
-
-
-## Role
-
-Defines who the AI should act as.
-
-
-Example:
-
-"You are an expert social media strategist."
-
-
-
-## Context
-
-Brand information.
-
-
-Contains:
-
-- Industry
-- Audience
-- Brand voice
-- Goals
-
-
-
-## Task
-
-What the AI should create.
-
-
-Example:
-
-"Create an Instagram campaign."
-
-
-
-## Requirements
-
-Rules and limitations.
-
-
-Example:
-
-- Use friendly tone
-- Follow brand colors
-- Avoid specific words
-
-
-
-## Output Format
-
-Defines final response format.
-
-
-
----
-
-# 4. Prompt Template System
-
-
-Templates are reusable structures.
-
-
-Examples:
-
-
-Social Media Template
-
-
-Video Script Template
-
-
-Image Generation Template
-
-
-SEO Article Template
-
-
-Advertisement Template
-
-
-
----
-
-# 5. Template Variables
-
-
-Templates use dynamic variables.
-
-
-Examples:
-
-
-{{brand_name}}
-
-{{industry}}
-
-{{target_audience}}
-
-{{brand_voice}}
-
-{{content_goal}}
-
-{{product_name}}
-
-
-
-The system automatically replaces variables with Brand Brain data.
-
-
-
----
-
-# 6. Prompt Categories
-
-
-Initial categories:
-
-
-## Social Media
-
-- Instagram Post
-- Story
-- Campaign
-
-
-## Marketing
-
-- Advertisement
-- Landing Page
-
-
-## Content
-
-- Blog
-- Email
-
-
-## Visual
-
-- Image Prompt
-- Video Prompt
-
-
-
----
-
-# 7. Prompt Library
-
-
-Users can:
-
-
-- Save prompts
-- Search prompts
-- Filter prompts
-- Duplicate prompts
-- Export prompts
-
-
-
-Prompt Library contains:
-
-
-Title
-
-Category
-
+## 2. Deterministic Build Flow
+
+```text
+User Task
+   +
 Brand
+   +
+Brand Identity
+   +
+Brand Rules
+   +
+Optional Product + Product Template
+   +
+Optional Persona + Persona Template
+   +
+Optional Prompt Template
+   +
+Extra Context
+        ↓
+Prompt Builder Service
+        ↓
+Final Prompt Text
+```
 
-Template
+API:
 
-Content
-
-Created Date
-
-
+`POST /api/v1/prompts/build`
 
 ---
 
-# 8. Prompt Quality Rules
+## 3. Builder Responsibilities
 
+The builder:
+
+- Validates the task
+- Loads the selected brand
+- Loads Brand Identity
+- Loads Brand Rules
+- Loads optional Product and Product Template
+- Loads optional Persona and Persona Template
+- Loads optional Prompt Template
+- Replaces standard placeholders
+- Applies extra variables/context
+- Cleans the final prompt
+- Returns plain text
+
+No AI inference occurs during this process.
+
+---
+
+## 4. Prompt Template Variables
+
+Supported standard context includes values such as:
+
+```text
+{{brand}}
+{{brand_name}}
+{{brand_identity}}
+{{brand_rules}}
+{{product}}
+{{product_name}}
+{{persona}}
+{{persona_name}}
+{{task}}
+{{extra_context}}
+```
+
+Template-defined dynamic fields are also supported for Product and Persona templates.
+
+---
+
+## 5. Saving and Execution
+
+The generated prompt can be saved as a Prompt and later executed through the AI Execution layer.
+
+```text
+Builder
+  ↓
+Prompt Text
+  ↓
+Save Prompt
+  ↓
+Prompt Library
+  ↓
+Execute Prompt
+  ↓
+AI Provider
+```
+
+---
+
+## 6. Quality Principles
 
 Every generated prompt should be:
-
 
 - Clear
 - Specific
@@ -266,110 +110,24 @@ Every generated prompt should be:
 - Brand aligned
 - Action oriented
 
-
-
-Avoid:
-
-
-- Generic prompts
-- Missing context
-- Ambiguous instructions
-
-
+The deterministic builder is intentionally predictable so that later AI optimization can be measured against a stable baseline.
 
 ---
 
-# 9. Free vs Premium Prompt Features
+## 7. Future AI Layer
 
+Phase 2 may add an optional optimization step after deterministic construction:
 
-## Free
+```text
+Structured Brand Context
+        ↓
+Deterministic Prompt Builder
+        ↓
+Baseline Prompt
+        ↓
+AI Optimizer
+        ↓
+Optimized Prompt + Explanation
+```
 
-
-- Basic templates
-- Limited prompt generation
-- One workspace
-
-
-
-## Pro
-
-
-- Advanced templates
-- Multiple brands
-- Brand Brain optimization
-- Unlimited library
-
-
-
-## Enterprise
-
-
-- Team collaboration
-- Custom templates
-- API access
-
-
-
----
-
-# 10. Future AI Optimization Layer
-
-
-Future:
-
-
-User Prompt
-
-↓
-
-AI Prompt Analyzer
-
-↓
-
-Prompt Improvement
-
-↓
-
-Model Specific Optimization
-
-
-
-Supported models:
-
-
-OpenAI
-
-Gemini
-
-Claude
-
-Open Source Models
-
-
-
----
-
-# 11. Prompt Version Control
-
-
-Future feature:
-
-
-Each prompt keeps:
-
-
-- Version history
-- Changes
-- Author
-- Date
-
-
-
----
-
-# 12. Core Principle
-
-
-Prompt AI Studio does not only generate prompts.
-
-It creates a reusable intelligence system for brands.
+The optimizer must not silently replace the trusted brand context.

@@ -1,388 +1,109 @@
 # Prompt AI Studio
 # Frontend Architecture
 
-
 ## 1. Frontend Overview
 
+Framework: **Next.js**  
+Language: **TypeScript**  
+UI: **React + Tailwind CSS**  
+Data/API: **Axios + TanStack React Query**  
+Validation: **Zod**
 
-Framework:
-
-Next.js
-
-
-Language:
-
-TypeScript
-
-
-UI Approach:
-
-Component Based Architecture
-
-
-Main Goals:
-
-- Fast user experience
-- Responsive design
-- Scalable components
-- Future mobile compatibility
-
-
+The frontend follows a component-based structure designed around authenticated workspace flows.
 
 ---
 
-# 2. Application Structure
+## 2. Current Application Areas
 
-
-Main sections:
-
-
-Public Website
-
-/
-
-Marketing pages
-
-
+```text
 Authentication
-
-/auth
-
-
 Dashboard
-
-/dashboard
-
-
 Workspace
-
-/workspace
-
-
-Brand Management
-
-/brands
-
-
-Prompt Studio
-
-/prompts
-
-
+Brand / Brand Brain
+Products
+Personas
+Prompt Library
+Prompt Builder
+AI Execution
+```
 
 ---
 
-# 3. Main Pages
+## 3. Prompt Routes
 
+Current prompt-related routes include:
 
-## Landing Page
+```text
+/workspace/[workspaceId]/prompts
+/workspace/[workspaceId]/prompts/new
+/workspace/[workspaceId]/prompts/[promptId]/execution
+/workspaces/[workspaceId]/prompts/builder
+```
 
-
-Purpose:
-
-Introduce Prompt AI Studio.
-
-
-Sections:
-
-
-- Hero section
-- Product explanation
-- Features
-- How it works
-- Pricing
-- CTA
-
-
+The project currently contains both `/workspace/...` and `/workspaces/...` route conventions. This is a known cleanup item for frontend hardening; new routes should follow the convention selected during the final Phase 1 cleanup.
 
 ---
 
-## Authentication Pages
+## 4. Prompt Builder Frontend
 
+The Prompt Builder is separated into:
 
-Pages:
+```text
+src/types/prompts.ts
+src/services/prompts.ts
+src/hooks/usePromptBuilder.ts
+src/components/prompts/PromptSelect.tsx
+src/components/prompts/PromptBuilderForm.tsx
+src/components/prompts/PromptPreview.tsx
+src/app/workspaces/[workspaceId]/prompts/builder/page.tsx
+```
 
+The UI calls the deterministic backend endpoint:
 
-/login
+`POST /api/v1/prompts/build`
 
-/register
-
-
-Features:
-
-
-- Email authentication
-- User session management
-
-
-
----
-
-## Dashboard
-
-
-Purpose:
-
-Main user control center.
-
-
-Components:
-
-
-- Workspace overview
-- Brand list
-- Recent prompts
-- Usage statistics
-
-
+The result is displayed as previewable plain text and can be copied for later use.
 
 ---
 
-## Workspace Page
+## 5. Prompt Library UI
 
+The Prompt Library currently supports:
 
-Purpose:
+- List prompts
+- List prompt templates
+- Create prompt navigation
+- Edit prompt
+- Delete prompt
+- Copy prompt content
+- Navigate to AI Execution
 
-Manage workspace.
-
-
-Features:
-
-
-- Workspace information
-- Members
-- Brands
-- Settings
-
-
+Search, filtering, favorites, and advanced organization remain future UX enhancements unless explicitly required by the MVP acceptance criteria.
 
 ---
 
-## Brand Creation Flow
+## 6. AI Execution UI
 
+The current execution page provides:
 
-Steps:
+- Execute saved prompt
+- Loading state
+- Error state
+- Display execution result
+- Load execution history
 
-
-1. Create Brand
-
-2. Define Industry
-
-3. Add Audience
-
-4. Define Brand Voice
-
-5. Define Visual Style
-
-6. Complete Brand Brain
-
-
+The current UI is intentionally a foundation and should be refined during Phase 1 hardening.
 
 ---
 
-## Brand Profile Page
+## 7. Shared Architecture
 
+Reusable UI primitives include layout components, navigation, buttons, cards, inputs, alerts, loading states, and authentication guards.
 
-Sections:
-
-
-Brand Identity
-
-Brand Voice
-
-Visual Rules
-
-Audience
-
-Goals
-
-Content Rules
-
-
+API access is separated into service modules rather than being embedded directly in page components.
 
 ---
 
-## Prompt Studio
+## 8. Production
 
-
-Main product interface.
-
-
-Features:
-
-
-- Select content type
-- Select template
-- Enter goal
-- Generate prompt
-- Save prompt
-- Export prompt
-
-
-
----
-
-## Prompt Library
-
-
-Features:
-
-
-- Search prompts
-- Filter by category
-- Favorite prompts
-- Duplicate prompts
-
-
-
----
-
-# 4. Component Architecture
-
-
-Reusable components:
-
-
-Layout:
-
-- Header
-- Sidebar
-- Footer
-
-
-UI:
-
-- Button
-- Input
-- Card
-- Modal
-- Dropdown
-- Tabs
-
-
-Product:
-
-- BrandCard
-- PromptCard
-- TemplateCard
-- BrandBrainEditor
-
-
-
----
-
-# 5. Frontend Folder Structure
-
-
-Recommended:
-
-
-src/
-
-
-components/
-
-features/
-
-app/
-
-hooks/
-
-services/
-
-types/
-
-utils/
-
-styles/
-
-
-
----
-
-# 6. State Management
-
-
-Initial:
-
-
-React Context
-
-
-Future:
-
-
-Zustand or Redux
-
-
-
----
-
-# 7. Design System
-
-
-Core:
-
-
-Colors
-
-Typography
-
-Spacing
-
-Components
-
-Icons
-
-
-Must follow:
-
-Prompt AI Studio Brand Identity
-
-
-
----
-
-# 8. Responsive Strategy
-
-
-Support:
-
-
-Desktop
-
-Tablet
-
-Mobile
-
-
-
-Mobile first approach.
-
-
----
-
-# 9. Future Mobile App
-
-
-Frontend architecture should allow:
-
-
-Shared API
-
-Shared business logic
-
-Mobile application development
-
-
-
----
-
-# 10. Development Principles
-
-
-- Reusable components
-- Clean code
-- Accessibility
-- Performance optimization
-- Scalable structure
+The frontend is built with Next.js and deployed through OpenNext/Cloudflare. Backend APIs are hosted separately and accessed through the configured API base URL.

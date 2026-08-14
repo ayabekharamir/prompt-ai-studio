@@ -1,115 +1,181 @@
 # Prompt AI Studio
 ## Project Master Plan
 
-
 ## 1. Project Overview
 
-Product Name:
-Prompt AI Studio
+**Product Name:** Prompt AI Studio  
+**Short Name:** PAS  
+**Persian Name:** استودیو پرامپت هوشمند  
+**Tagline:** Build Your Brand's AI Brain  
+**Persian Tagline:** مغز هوشمند ساخت محتوای برندها
 
-Short Name:
-PAS
+PAS is a SaaS platform for structured Brand Intelligence, Prompt Management, Prompt Building, and AI Execution.
 
-Persian Name:
-استودیو پرامپت هوشمند
-
-Tagline:
-Build Your Brand's AI Brain
-
-Persian Tagline:
-مغز هوشمند ساخت محتوای برندها
-
+---
 
 ## 2. Product Vision
 
-Prompt AI Studio is a Brand Intelligence platform designed to help businesses create, manage and optimize their content creation workflow.
+PAS gives every brand a reusable digital brain containing its identity, rules, products, personas, templates, and prompts.
 
-The first version focuses on professional prompt generation and brand knowledge management.
+The product evolves from deterministic brand-aware prompt construction into AI prompt optimization, content generation, and eventually an autonomous AI Brand Agent.
 
-Future vision:
-An AI operating system for brands.
+---
 
+## 3. Current Project State
 
-## 3. Product Evolution
+### Phase 0
 
-Phase 0:
-Foundation
+**Status: Completed ✅**
 
-Phase 1:
-Prompt Management Platform
+### Phase 1
 
-Phase 2:
-AI Prompt Optimization
+**Status: Core Complete ✅**
 
-Phase 3:
-AI Content Generation
+The working MVP now includes the main backend and frontend product flows.
 
-Phase 4:
-AI Brand Agent
+The remaining Phase 1 work is primarily hardening, UX refinement, testing, and production readiness.
 
-Phase 5:
-Enterprise AI Platform
+---
 
+## 4. Technology Stack
 
-## 4. Technology Direction
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js + TypeScript + React |
+| Styling | Tailwind CSS |
+| Frontend Data | Axios + TanStack React Query |
+| Validation | Zod / Pydantic |
+| Backend | FastAPI + Python |
+| ORM | SQLAlchemy |
+| Database | PostgreSQL |
+| Migrations | Alembic |
+| Auth | JWT |
+| Architecture | Repository + Service + Provider Patterns |
+| Frontend Hosting | Cloudflare / OpenNext |
+| Backend Hosting | Railway |
+| Version Control | GitHub |
 
-Frontend:
-Next.js + TypeScript
+---
 
-Backend:
-FastAPI
+## 5. Core Product Model
 
-Database:
-PostgreSQL
+```text
+Workspace
+  └── Brand
+       ├── Brand Identity
+       ├── Brand Rules
+       ├── Brand Assets
+       ├── Products
+       │    └── Product Template
+       └── Personas
+            └── Persona Template
 
-Hosting:
-Cloudflare ecosystem
+Workspace
+  └── Prompt Library
+       ├── Prompt
+       ├── Prompt Template
+       └── Prompt Execution History
+```
 
-Version Control:
-GitHub
+---
 
+## 6. Prompt Builder Architecture
 
-## 5. Core Product Concept
+The deterministic Prompt Builder does not call an AI provider.
 
-Every brand has a digital brain.
+```text
+Brand
++ Brand Brain
++ Brand Rules
++ Product Template + Product
++ Persona Template + Persona
++ Prompt Template
++ Task
++ Extra Context
+        ↓
+Deterministic Prompt Builder
+        ↓
+Final Prompt Text
+```
 
-This brain contains:
+API:
 
-- Brand Identity
-- Brand Voice
-- Audience Knowledge
-- Visual Rules
-- Content Strategy
-- Prompt Library
+`POST /api/v1/prompts/build`
 
+This separation allows the deterministic builder to remain stable while Phase 2 adds optional AI optimization on top.
 
-## 6. First MVP Features
+---
 
-Users can:
+## 7. AI Execution Architecture
 
-- Create account
-- Create workspace
-- Create brand profile
-- Store brand information
-- Select content type
-- Generate professional prompts
-- Save prompts
-- Export prompts
+```text
+Saved Prompt
+     ↓
+Prompt Execution Service
+     ↓
+Provider Factory
+     ↓
+┌──────────┬────────────┬──────────┐
+│ OpenAI   │ Anthropic  │ Gemini   │
+└──────────┴────────────┴──────────┘
+     ↓
+Normalized Execution Result
+     ↓
+PromptExecution
+```
 
+The provider boundary prevents the core application from being coupled to a single AI vendor.
 
-## 7. Development Rules
+---
 
-- Build simple first
-- Avoid unnecessary complexity
-- Keep documentation updated
-- Use modular architecture
-- Prepare for AI integration
+## 8. Phase 1 Functional Scope
 
+Implemented:
 
-## 8. Current Status
+- Authentication
+- Workspaces
+- Brand management
+- Brand Brain
+- Brand Rules
+- Brand Assets
+- Products
+- Product Templates
+- Personas
+- Persona Templates
+- Prompt Templates
+- Prompt CRUD
+- Prompt Library UI
+- Prompt Builder API
+- Prompt Builder UI
+- AI Execution API
+- Execution history
+- Execution UI foundation
 
-Phase:
-Foundation
+---
 
-Status:
-In Progress
+## 9. Phase 2 Direction
+
+The next major product phase is **AI Prompt Optimization**.
+
+The deterministic builder remains the source of truth for assembling brand context. AI optimization will operate as an additional intelligence layer rather than replacing the builder.
+
+Planned Phase 2 areas:
+
+- Prompt quality analysis
+- AI optimization
+- Brand-aware recommendations
+- Missing information detection
+- Prompt comparison
+- Optimization history
+- Model selection
+
+---
+
+## 10. Development Rules
+
+1. Keep the deterministic core stable.
+2. Add AI capabilities behind clear service/provider boundaries.
+3. Prefer small, testable modules.
+4. Keep frontend/backend contracts explicit.
+5. Update documentation after meaningful milestones.
+6. Do not move into advanced AI-agent features before the MVP is stable.
