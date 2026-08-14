@@ -2,7 +2,7 @@
 
 ## 1. Scope of This Document
 
-This document describes the functional scope of **Phase 1 only**. Features listed here relate to Brand Brain and Prompt Management. AI content generation, prompt optimization, and agent capabilities are explicitly out of scope and belong to later phases (see `Strategy/ROADMAP.md`).
+This document describes the functional scope of **Phase 1** and its current implementation status. The Phase 1 MVP now includes Brand Brain, Prompt Management, deterministic Prompt Building, and the foundation for AI Execution. AI prompt optimization, AI content generation, and agent capabilities remain reserved for later phases (see `Strategy/ROADMAP.md`).
 
 ## 2. Core Feature Areas
 
@@ -56,10 +56,11 @@ To maintain focus, the following are **not** part of Phase 1 and are reserved fo
 
 | Feature Area | Phase 1 Status |
 |---|---|
-| Brand Brain | ✅ Included |
-| Prompt Library | ✅ Included |
-| Prompt Generator (template-based) | ✅ Included |
-| Workspace & basic roles | ✅ Included |
+| Brand Brain | ✅ Implemented |
+| Prompt Library | ✅ Core UI/API implemented |
+| Prompt Generator (deterministic/template-based) | ✅ Implemented |
+| AI Execution Foundation | ✅ Implemented |
+| Workspace & basic roles | ✅ Core workspace implemented |
 | AI Prompt Optimization | ❌ Phase 2 |
 | AI Content Generation | ❌ Phase 3 |
 | AI Brand Agent | ❌ Phase 4 |
@@ -67,4 +68,4 @@ To maintain focus, the following are **not** part of Phase 1 and are reserved fo
 
 ## 5. Persian Summary | خلاصه فارسی
 
-نسخه اول (Phase 1) استودیو پرامپت هوشمند شامل چهار بخش اصلی است: «مغز برند» برای ثبت هویت و لحن برند، «کتابخانه پرامپت» برای سازمان‌دهی و بازیابی پرامپت‌ها، «تولیدکننده پرامپت» برای ساخت پرامپت‌های ساختاریافته بر اساس داده‌های برند، و زیرساخت پایه‌ی پلتفرم (حساب کاربری، ورک‌اسپیس، خروجی/ورودی داده). قابلیت‌های تولید خودکار محتوا، بهینه‌سازی هوشمند پرامپت و ایجنت هوشمند برند به‌صراحت خارج از محدوده این فاز هستند و در فازهای بعدی توسعه داده می‌شوند.
+نسخه اول (Phase 1) استودیو پرامپت هوشمند اکنون به‌صورت یک MVP وب قابل اجرا توسعه یافته و شامل چهار بخش اصلی است: «مغز برند» برای ثبت هویت و لحن برند، «کتابخانه پرامپت» برای سازمان‌دهی و بازیابی پرامپت‌ها، «تولیدکننده پرامپت» برای ساخت پرامپت‌های ساختاریافته بر اساس داده‌های برند، و زیرساخت پایه‌ی پلتفرم (حساب کاربری، ورک‌اسپیس، خروجی/ورودی داده). قابلیت‌های تولید خودکار محتوا، بهینه‌سازی هوشمند پرامپت و ایجنت هوشمند برند به‌صراحت خارج از محدوده این فاز هستند و در فازهای بعدی توسعه داده می‌شوند.
