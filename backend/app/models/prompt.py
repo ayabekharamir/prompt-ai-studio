@@ -4,24 +4,58 @@ and linked to a brand for Brand Brain context.
 """
 
 from sqlalchemy import Column, String, Text, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from app.core.types import GUID
 from app.models.base import BaseModel
 
 
 class Prompt(BaseModel):
     __tablename__ = "prompts"
 
-    workspace_id = Column(UUID(as_uuid=True), ForeignKey("workspaces.id"), nullable=False)
-    brand_id = Column(UUID(as_uuid=True), ForeignKey("brands.id"), nullable=True)
-    template_id = Column(UUID(as_uuid=True), ForeignKey("prompt_templates.id"), nullable=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    workspace_id = Column(
+        GUID(),
+        ForeignKey("workspaces.id"),
+        nullable=False,
+    )
 
-    title = Column(String(200), nullable=False)
-    content = Column(Text, nullable=False)
+    brand_id = Column(
+        GUID(),
+        ForeignKey("brands.id"),
+        nullable=True,
+    )
 
-    # draft | saved | archived  (generation status reserved for future AI integration)
-    status = Column(String(30), nullable=False, default="draft")
+    template_id = Column(
+        GUID(),
+        ForeignKey("prompt_templates.id"),
+        nullable=True,
+    )
 
-    template = relationship("PromptTemplate", back_populates="prompts")
+    created_by = Column(
+        GUID(),
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+
+    title = Column(
+        String(200),
+        nullable=False,
+    )
+
+    content = Column(
+        Text,
+        nullable=False,
+    )
+
+    # draft | saved | archived
+    # generation status reserved for future AI integration
+    status = Column(
+        String(30),
+        nullable=False,
+        default="draft",
+    )
+
+    template = relationship(
+        "PromptTemplate",
+        back_populates="prompts",
+    )

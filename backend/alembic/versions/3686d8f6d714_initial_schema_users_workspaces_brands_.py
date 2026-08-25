@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from app.core.types import GUID
 
 
 # revision identifiers, used by Alembic.
@@ -30,7 +31,7 @@ def upgrade() -> None:
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('oauth_provider', sa.String(length=50), nullable=True),
     sa.Column('oauth_provider_id', sa.String(length=255), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.PrimaryKeyConstraint('id')
@@ -41,8 +42,8 @@ def upgrade() -> None:
     op.create_table('workspaces',
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('slug', sa.String(length=150), nullable=False),
-    sa.Column('owner_id', sa.UUID(), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('owner_id', GUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
@@ -51,13 +52,13 @@ def upgrade() -> None:
     op.create_index(op.f('ix_workspaces_id'), 'workspaces', ['id'], unique=False)
     op.create_index(op.f('ix_workspaces_slug'), 'workspaces', ['slug'], unique=True)
     op.create_table('brands',
-    sa.Column('workspace_id', sa.UUID(), nullable=False),
+    sa.Column('workspace_id', GUID(), nullable=False),
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('industry', sa.String(length=150), nullable=True),
     sa.Column('website', sa.String(length=255), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('logo_url', sa.String(length=500), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['workspace_id'], ['workspaces.id'], ),
@@ -65,13 +66,13 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_brands_id'), 'brands', ['id'], unique=False)
     op.create_table('prompt_templates',
-    sa.Column('workspace_id', sa.UUID(), nullable=True),
+    sa.Column('workspace_id', GUID(), nullable=True),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('category', sa.String(length=100), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('template_body', sa.Text(), nullable=False),
     sa.Column('is_system_template', sa.String(length=10), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['workspace_id'], ['workspaces.id'], ),
@@ -79,10 +80,10 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_prompt_templates_id'), 'prompt_templates', ['id'], unique=False)
     op.create_table('workspace_members',
-    sa.Column('workspace_id', sa.UUID(), nullable=False),
-    sa.Column('user_id', sa.UUID(), nullable=False),
+    sa.Column('workspace_id', GUID(), nullable=False),
+    sa.Column('user_id', GUID(), nullable=False),
     sa.Column('role', sa.String(length=30), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
@@ -91,7 +92,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_workspace_members_id'), 'workspace_members', ['id'], unique=False)
     op.create_table('brand_identity',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
     sa.Column('mission', sa.Text(), nullable=True),
     sa.Column('vision', sa.Text(), nullable=True),
     sa.Column('target_audience', sa.Text(), nullable=True),
@@ -99,7 +100,7 @@ def upgrade() -> None:
     sa.Column('core_values', sa.Text(), nullable=True),
     sa.Column('unique_selling_point', sa.Text(), nullable=True),
     sa.Column('brand_personality', sa.Text(), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -108,11 +109,11 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_brand_identity_id'), 'brand_identity', ['id'], unique=False)
     op.create_table('brand_rules',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
     sa.Column('rule_type', sa.String(length=50), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -120,14 +121,14 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_brand_rules_id'), 'brand_rules', ['id'], unique=False)
     op.create_table('prompts',
-    sa.Column('workspace_id', sa.UUID(), nullable=False),
-    sa.Column('brand_id', sa.UUID(), nullable=True),
-    sa.Column('template_id', sa.UUID(), nullable=True),
-    sa.Column('created_by', sa.UUID(), nullable=False),
+    sa.Column('workspace_id', GUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=True),
+    sa.Column('template_id', GUID(), nullable=True),
+    sa.Column('created_by', GUID(), nullable=False),
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('content', sa.Text(), nullable=False),
     sa.Column('status', sa.String(length=30), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),

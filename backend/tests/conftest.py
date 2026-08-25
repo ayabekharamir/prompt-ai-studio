@@ -1,32 +1,22 @@
 """
 Shared pytest fixtures.
 
-Test database: the models use PostgreSQL-specific column types
-(sqlalchemy.dialects.postgresql.UUID), so tests run against a real
-PostgreSQL database rather than SQLite - this matches production and
-avoids subtle dialect differences.
+Tests use a real database through TEST_DATABASE_URL.
+The same test suite can run against PostgreSQL or MySQL.
 
-Point TEST_DATABASE_URL at a throwaway database before running pytest, e.g.:
-
-    export TEST_DATABASE_URL=postgresql://pas_user:change_me@localhost:5432/prompt_ai_studio_test
-    pytest
-
-If unset, it defaults to the value below (matches the docker-compose
-`postgres` service credentials, with a `_test` suffixed database name).
-The database itself must already exist; tests create/drop tables in it
-but do not create the database.
-
-Isolation: each test runs inside its own transaction that is rolled back
-on teardown (nested SAVEPOINT pattern), so tests never see each other's
-data and the schema only needs to be created once per test session.
+Storage:
+Brand asset tests use a temporary writable directory instead of the
+production storage path (/data/brand-assets).
 """
 
 import os
+import tempfile
 
 import pytest
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
+# Use the requested test database.
 os.environ.setdefault(
     "DATABASE_URL",
     os.environ.get(
@@ -34,6 +24,10 @@ os.environ.setdefault(
         "postgresql://pas_user:change_me@localhost:5432/prompt_ai_studio_test",
     ),
 )
+
+# Use a writable temporary directory for tests.
+TEST_STORAGE_PATH = tempfile.mkdtemp(prefix="pas-test-storage-")
+os.environ["STORAGE_LOCAL_PATH"] = TEST_STORAGE_PATH
 
 from app.core.database import Base, get_db  # noqa: E402
 
@@ -69,7 +63,11 @@ def engine():
 def db_session(engine):
     connection = engine.connect()
     transaction = connection.begin()
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=connection)
+    SessionLocal = sessionmaker(
+        autocommit=False,
+        autoflush=False,
+        bind=connection,
+    )
     session = SessionLocal()
 
     # Support code under test calling session.commit() without actually
@@ -92,14 +90,16 @@ def db_session(engine):
 @pytest.fixture()
 def client(db_session):
     from fastapi.testclient import TestClient
-    from main import app  # backend/main.py - module-level FastAPI() instance
+    from main import app
 
     def override_get_db():
         yield db_session
 
     app.dependency_overrides[get_db] = override_get_db
+
     with TestClient(app) as test_client:
         yield test_client
+
     app.dependency_overrides.clear()
 
 
@@ -109,10 +109,17 @@ def auth_headers(client):
     from tests.factories import register_payload
 
     payload = register_payload()
+
     client.post("/api/v1/auth/register", json=payload)
+
     login_response = client.post(
         "/api/v1/auth/login",
-        json={"email": payload["email"], "password": payload["password"]},
+        json={
+            "email": payload["email"],
+            "password": payload["password"],
+        },
     )
+
     token = login_response.json()["access_token"]
+
     return {"Authorization": f"Bearer {token}"}

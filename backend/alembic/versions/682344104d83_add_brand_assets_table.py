@@ -9,6 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from app.core.types import GUID
 
 
 # revision identifiers, used by Alembic.
@@ -20,8 +21,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table('brand_assets',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
-    sa.Column('uploaded_by', sa.UUID(), nullable=True),
+    sa.Column('brand_id', GUID(), nullable=False),
+    sa.Column('uploaded_by', GUID(), nullable=True),
     sa.Column('filename', sa.String(length=255), nullable=False),
     sa.Column('original_filename', sa.String(length=255), nullable=True),
     sa.Column('mime_type', sa.String(length=100), nullable=False),
@@ -29,7 +30,7 @@ def upgrade() -> None:
     sa.Column('storage_key', sa.String(length=500), nullable=False),
     sa.Column('category', sa.String(length=30), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),

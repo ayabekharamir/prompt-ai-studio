@@ -14,10 +14,11 @@ colors, fonts, visual style, design rules) - not uploaded files.
 """
 
 from sqlalchemy import Column, String, Text, Integer, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from app.core.types import GUID
 from app.models.base import BaseModel
+
 
 # Generic, non-brand-specific categories (kept intentionally simple).
 ASSET_CATEGORIES = (
@@ -34,20 +35,59 @@ ASSET_CATEGORIES = (
 class BrandAsset(BaseModel):
     __tablename__ = "brand_assets"
 
-    brand_id = Column(UUID(as_uuid=True), ForeignKey("brands.id"), nullable=False, index=True)
-    uploaded_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    brand_id = Column(
+        GUID(),
+        ForeignKey("brands.id"),
+        nullable=False,
+        index=True,
+    )
 
-    filename = Column(String(255), nullable=False)
-    original_filename = Column(String(255), nullable=True)
-    mime_type = Column(String(100), nullable=False)
-    size_bytes = Column(Integer, nullable=False)
+    uploaded_by = Column(
+        GUID(),
+        ForeignKey("users.id"),
+        nullable=True,
+    )
+
+    filename = Column(
+        String(255),
+        nullable=False,
+    )
+
+    original_filename = Column(
+        String(255),
+        nullable=True,
+    )
+
+    mime_type = Column(
+        String(100),
+        nullable=False,
+    )
+
+    size_bytes = Column(
+        Integer,
+        nullable=False,
+    )
 
     # Relative, tenant-scoped storage path, e.g.
     # "brand-assets/{brand_id}/{asset_id}/{filename}". Never a full URL -
     # resolving it to bytes/URL is the StorageProvider's job.
-    storage_key = Column(String(500), nullable=False)
+    storage_key = Column(
+        String(500),
+        nullable=False,
+    )
 
-    category = Column(String(30), nullable=False, default="other")
-    description = Column(Text, nullable=True)
+    category = Column(
+        String(30),
+        nullable=False,
+        default="other",
+    )
 
-    brand = relationship("Brand", back_populates="assets")
+    description = Column(
+        Text,
+        nullable=True,
+    )
+
+    brand = relationship(
+        "Brand",
+        back_populates="assets",
+    )
