@@ -7,8 +7,11 @@ class GUID(TypeDecorator):
     """
     Platform-independent GUID type.
 
-    Uses PostgreSQL UUID when running on PostgreSQL,
-    and CHAR(36) when running on databases like MySQL.
+    PostgreSQL:
+        UUID
+
+    MySQL and other databases:
+        CHAR(36)
     """
 
     impl = CHAR
@@ -46,8 +49,11 @@ class JSONType(TypeDecorator):
     """
     Platform-independent JSON type.
 
-    Uses PostgreSQL JSONB when running on PostgreSQL,
-    and native JSON when running on databases like MySQL.
+    PostgreSQL:
+        JSONB
+
+    MySQL and other databases:
+        JSON
     """
 
     impl = JSON

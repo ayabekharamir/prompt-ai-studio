@@ -3,7 +3,8 @@ Product model: a single product/service belonging to a brand, created
 from one of that brand's ProductTemplates.
 """
 
-from sqlalchemy import Column, String, ForeignKey, JSON
+from sqlalchemy import Column, String, ForeignKey
+from app.core.types import JSONType
 from sqlalchemy.orm import relationship
 
 from app.core.types import GUID
@@ -28,7 +29,7 @@ class Product(BaseModel):
     )
 
     name = Column(String(200), nullable=False)
-    field_values = Column(JSON, nullable=False, default=dict)
+    field_values = Column(JSONType(), nullable=False, default=dict)
 
     brand = relationship("Brand", back_populates="products")
 

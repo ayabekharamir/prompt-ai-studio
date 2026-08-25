@@ -3,7 +3,8 @@ Persona Template model: a brand-defined, reusable field schema for one
 category of brand persona.
 """
 
-from sqlalchemy import Column, String, Text, ForeignKey, JSON
+from sqlalchemy import Column, String, Text, ForeignKey
+from app.core.types import JSONType
 from sqlalchemy.orm import relationship
 
 from app.core.types import GUID
@@ -22,7 +23,7 @@ class PersonaTemplate(BaseModel):
 
     name = Column(String(150), nullable=False)
     description = Column(Text, nullable=True)
-    fields = Column(JSON, nullable=False, default=list)
+    fields = Column(JSONType(), nullable=False, default=list)
 
     brand = relationship("Brand", back_populates="persona_templates")
 
