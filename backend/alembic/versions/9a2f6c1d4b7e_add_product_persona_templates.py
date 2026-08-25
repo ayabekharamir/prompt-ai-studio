@@ -9,7 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
+from app.core.types import GUID, JSONType
 
 
 # revision identifiers, used by Alembic.
@@ -21,11 +21,11 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     op.create_table('product_templates',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('fields', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('fields', JSONType(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -35,11 +35,11 @@ def upgrade() -> None:
     op.create_index(op.f('ix_product_templates_brand_id'), 'product_templates', ['brand_id'], unique=False)
 
     op.create_table('products',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
-    sa.Column('template_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
+    sa.Column('template_id', GUID(), nullable=False),
     sa.Column('name', sa.String(length=200), nullable=False),
-    sa.Column('field_values', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('field_values', JSONType(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -51,11 +51,11 @@ def upgrade() -> None:
     op.create_index(op.f('ix_products_template_id'), 'products', ['template_id'], unique=False)
 
     op.create_table('persona_templates',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('fields', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('fields', JSONType(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
@@ -65,11 +65,11 @@ def upgrade() -> None:
     op.create_index(op.f('ix_persona_templates_brand_id'), 'persona_templates', ['brand_id'], unique=False)
 
     op.create_table('personas',
-    sa.Column('brand_id', sa.UUID(), nullable=False),
-    sa.Column('template_id', sa.UUID(), nullable=False),
+    sa.Column('brand_id', GUID(), nullable=False),
+    sa.Column('template_id', GUID(), nullable=False),
     sa.Column('name', sa.String(length=200), nullable=False),
-    sa.Column('field_values', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
-    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('field_values', JSONType(), nullable=False),
+    sa.Column('id', GUID(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.ForeignKeyConstraint(['brand_id'], ['brands.id'], ),
