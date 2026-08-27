@@ -39,11 +39,65 @@ def _format_brand_identity(obj):
 def _format_brand_rules(rules):
     return [f"{getattr(r,'title','')}: {getattr(r,'description','')}" for r in rules if getattr(r,'title',None) or getattr(r,'description',None)]
 
+def _field_key_label(field: Any) -> tuple[str | None, str | None]:
+    """Read (key, label) from a field definition, whether it's a dict
+    (as stored in JSONType columns) or an object with attributes."""
+    if isinstance(field, dict):
+        return field.get("key"), field.get("label")
+    return getattr(field, "key", None), getattr(field, "label", None)
+
+
+def _format_field_details(field_values: dict | None, fields: list | None) -> list[str]:
+    """Build one line per template field: 'برچسب نمایشی: متن برچسب' when a
+    value is stored, or just 'برچسب نمایشی' when no value was stored for it."""
+    if not fields:
+        return []
+
+    field_values = field_values or {}
+    lines: list[str] = []
+
+    for field in fields:
+        key, label = _field_key_label(field)
+
+        if not label:
+            continue
+
+        raw_value = field_values.get(key) if key else None
+        value_text = _safe_value(raw_value)
+
+        if value_text:
+            lines.append(f"{label}: {value_text}")
+        else:
+            lines.append(label)
+
+    return lines
+
+
 def _format_product(product, template=None):
-    return [f"نام محصول: {product.name}"] if product else []
+    if not product:
+        return []
+
+    lines = [f"نام محصول: {product.name}"]
+    lines.extend(
+        _format_field_details(
+            field_values=getattr(product, "field_values", None),
+            fields=getattr(template, "fields", None),
+        )
+    )
+    return lines
 
 def _format_persona(persona, template=None):
-    return [f"نام پرسونا: {persona.name}"] if persona else []
+    if not persona:
+        return []
+
+    lines = [f"نام پرسونا: {persona.name}"]
+    lines.extend(
+        _format_field_details(
+            field_values=getattr(persona, "field_values", None),
+            fields=getattr(template, "fields", None),
+        )
+    )
+    return lines
 
 def _replace_standard_placeholders(text, context):
     for k,v in context.items():
