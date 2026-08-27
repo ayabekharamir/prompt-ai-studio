@@ -53,7 +53,7 @@ register_exception_handlers(app)
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -140,6 +140,15 @@ app.include_router(
     prefix=f"{API_PREFIX}/prompts",
     tags=["Prompts"],
 )
+
+
+# Routing Test Endpoint
+@app.get("/test-routing", tags=["Health"])
+def test_routing():
+    return {
+        "routing": "ok",
+        "message": "FastAPI received this request",
+    }
 
 
 # Root endpoint
